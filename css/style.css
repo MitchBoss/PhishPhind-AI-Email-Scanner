@@ -1,0 +1,20 @@
+/* style.css */
+body {
+    margin: 20px;
+  }
+  .progress {
+    height: 25px;
+  }
+  #spinner-container {
+    display: none;
+  }
+  #error-message,
+  #success-message {
+    display: none;
+  }
+  .tab-content {
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 15px;
+  }
+  

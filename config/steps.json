@@ -1,0 +1,45 @@
+[
+    {
+      "name": "data_extraction",
+      "menuName": "Extract Data",
+      "stepPrompt": "Please extract the following information from the raw message content provided:\n\n**Message Content:**\n{message_content}\n\n**Tasks:**\n- Extract Sender's Name.\n- Extract Sender's Email Address or Phone Number.\n- Extract Recipient's Name.\n- Extract Recipient's Email Address.\n- Extract Date and Time Sent.\n- Extract Subject Line.\n- Extract Full Message Body. (If encoded, output in plain text)\n- List Attachment Names and File Types.\n- List Embedded URLs.",
+      "llmInstructions": "Please provide your response enclosed EXACTLY within the following tags:\n\n[Response]\n**Sender Details:**\n- Sender's Name: <Extracted Sender's Name>\n- Sender's Email Address or Phone Number: <Extracted Sender's Email/Phone>\n\n**Recipient Details:**\n- Recipient's Name: <Extracted Recipient's Name>\n- Recipient's Email Address: <Extracted Recipient's Email>\n\n**Message Metadata:**\n- Date and Time Sent: <Extracted Date and Time>\n- Subject Line: <Extracted Subject Line>\n\n**Content:**\n- Full Message Body:\n<Extracted Message Body>\n\n**Attachments:**\n- List of Attachment Names and File Types:\n<Extracted Attachments>\n\n**Links:**\n- List of Embedded URLs:\n<Extracted URLs>\n\n[Response Summary]\nA brief summary: Indicate whether the data was extracted successfully and note any missing elements."
+    },
+    {
+      "name": "sender_analysis",
+      "menuName": "Sender Analysis",
+      "stepPrompt": "Using the sender's information below, perform a sender analysis:\n\n{data_extraction_output}\n\n**Tasks:**\n- Extract the domain from the sender's email address.\n- Verify if the domain matches the official domain of the claimed organization.\n- Identify any misspellings or slight variations in the domain.\n- Determine if the email is from a free email service provider.\n- Assess the legitimacy of the sender's name and email address.\n- Cross-reference the sender's email/phone number with known spam or scam databases (hypothetically).",
+      "llmInstructions": "Please provide your response enclosed within the following tags:\n\n[Response]\n**Sender Analysis Report:**\n- Extracted Domain: <Domain from email address>\n- Domain Verification: <Does it match the official domain?>\n- Domain Anomalies: <List any misspellings or variations>\n- Free Email Service: <Yes/No>\n- Legitimacy Assessment: <Your assessment>\n- Red Flags Identified: <List any red flags>\n\n[Response Summary]\nA brief summary: Provide a one-sentence assessment of the sender's legitimacy."
+    },
+    {
+      "name": "content_analysis",
+      "menuName": "Content Analysis",
+      "stepPrompt": "Analyze the following message content for suspicious characteristics:\n\n{data_extraction_output}\n\n**Tasks:**\n- Identify any phrases that indicate urgency or threats.\n- Note any psychological pressure tactics used.\n- Scan for grammar and spelling errors or unusual phrasing.\n- Look for requests for personal or sensitive information.\n- Assess if the message includes unrealistic offers or prizes.",
+      "llmInstructions": "Please provide your response enclosed within the following tags:\n\n[Response]\n**Content Analysis Findings:**\n- Urgent or Threatening Phrases: <List phrases>\n- Psychological Pressure Tactics: <Describe tactics>\n- Grammar and Spelling Issues: <Describe any issues>\n- Requests for Sensitive Information: <List requests>\n- Unrealistic Offers or Prizes: <Describe if any>\n\n[Response Summary]\nA brief summary: Provide a one-sentence assessment of the content's suspiciousness."
+    },
+    {
+      "name": "links_attachments_analysis",
+      "menuName": "Links and Attachments Analysis",
+      "stepPrompt": "Analyze the following links and attachments for potential risks:\n\n{data_extraction_output}\n\n**Tasks for URLs:**\n- List all URLs and reveal their actual destinations.\n- Identify any misspellings or anomalies in the URLs.\n- Assess the legitimacy of the domains.\n- Check for use of URL shortening services.\n\n**Tasks for Attachments:**\n- List all attachments with their file names and types.\n- Assess the risk level based on the file type (e.g., executables, macro-enabled documents).\n- Note any unusual or unexpected attachments.",
+      "llmInstructions": "Please provide your response enclosed within the following tags:\n\n[Response]\n**Links Analysis:**\n- URLs and Destinations:\n  - URL 1: <Original URL> -> <Actual Destination>\n- URL Anomalies: <List any anomalies>\n- Legitimacy of Domains: <Assessment>\n\n**Attachments Analysis:**\n- Attachments:\n  - File 1: <File Name> (<File Type>)\n- Risk Assessment: <Describe risks>\n- Unusual Attachments: <List any unexpected files>\n\n[Response Summary]\nA brief summary: Provide a one-sentence assessment of the risks associated with the links and attachments."
+    },
+    {
+      "name": "contextual_analysis",
+      "menuName": "Contextual Analysis",
+      "stepPrompt": "Based on the information below, perform a contextual and behavioral analysis:\n\n**Full Message Details:**\n{data_extraction_output}\n\n**Previous Findings:**\n- Sender Analysis Summary: {sender_analysis_summary}\n- Content Analysis Summary: {content_analysis_summary}\n- Links and Attachments Analysis Summary: {links_attachments_analysis_summary}\n\n**Tasks:**\n- Determine if the message is expected or relates to any recent activities of the recipient.\n- Check for any prior communication history with the sender (hypothetically).\n- Compare the display name with the email address for inconsistencies.\n- Verify if the reply-to address differs from the sender's address.\n- Assess the overall context and any anomalies.",
+      "llmInstructions": "Please provide your response enclosed within the following tags:\n\n[Response]\n**Contextual Analysis Findings:**\n- Expected Message: <Yes/No, with explanation>\n- Prior Communication History: <Hypothetical assessment>\n- Display Name vs. Email Address: <Describe inconsistencies>\n- Reply-To Address Check: <Describe findings>\n- Additional Anomalies: <List any other issues>\n\n[Response Summary]\nA brief summary: Provide a one-sentence assessment of the contextual risks."
+    },
+    {
+      "name": "compilation_of_findings",
+      "menuName": "Compilation of Findings",
+      "stepPrompt": "Compile a comprehensive summary based on the analyses from previous steps:\n\n**Findings:**\n\n- **Sender Analysis:**\n{sender_analysis_output}\n\n- **Content Analysis:**\n{content_analysis_output}\n\n- **Links and Attachments Analysis:**\n{links_attachments_analysis_output}\n\n- **Contextual Analysis:**\n{contextual_analysis_output}\n\n**Tasks:**\n- Aggregate all identified red flags and suspicious indicators.\n- Organize the findings by categories:\n  - Sender\n  - Content\n  - Links and Attachments\n  - Context\n- Assess the overall severity of the risks (High, Medium, or Low).",
+      "llmInstructions": "Please provide your response enclosed within the following tags:\n\n[Response]\n**Consolidated Report:**\n\n- **Sender:**\n  - Key Findings: <List key findings>\n  - Red Flags: <List red flags>\n\n- **Content:**\n  - Key Findings: <List key findings>\n  - Red Flags: <List red flags>\n\n- **Links and Attachments:**\n  - Key Findings: <List key findings>\n  - Red Flags: <List red flags>\n\n- **Context:**\n  - Key Findings: <List key findings>\n  - Red Flags: <List red flags>\n\n**Overall Risk Assessment:** <High/Medium/Low>\n\n[Response Summary]\nA brief summary: Provide a one-sentence overall risk assessment."
+    },
+    {
+      "name": "recommendations",
+      "menuName": "Recommendations",
+      "stepPrompt": "Based on the consolidated report below, provide recommendations and next steps:\n\n{compilation_of_findings_output}\n\n**Tasks:**\n- Highlight the most critical issues and significant risks.\n- Suggest appropriate actions for the cyber analyst.\n- Advise on precautionary measures.\n- Reporting to relevant authorities or IT departments.",
+      "llmInstructions": "Please provide your response enclosed within the following tags:\n\n[Response]\n**Recommendations:**\n- Critical Issues: <List the most critical issues>\n- Suggested Actions:\n  - Action 1: <Description>\n  - Action 2: <Description>\n- Precautionary Measures: <List measures>\n- Reporting: <Advise on reporting procedures>\n\n[Response Summary]\nA brief summary: Provide a one-sentence recommendation."
+    }
+  ]
+  
