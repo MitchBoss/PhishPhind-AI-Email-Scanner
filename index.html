@@ -19,6 +19,9 @@
     </div>
   </nav>
 
+  <!-- Notification Container -->
+  <div id="notification-container"></div>
+
   <!-- Main Content -->
   <div class="container" id="mainContent">
     <h1 class="mb-4">PhishPhind: AI Email Scanner</h1>
@@ -50,10 +53,6 @@
       <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
     </div>
 
-    <!-- Alert messages -->
-    <div id="error-message" class="alert alert-danger" role="alert" style="display: none;"></div>
-    <div id="success-message" class="alert alert-success" role="alert" style="display: none;"></div>
-
     <!-- Results Tabs -->
     <ul class="nav nav-tabs" id="resultTabs" role="tablist"></ul>
     <div class="tab-content" id="resultTabsContent"></div>
@@ -74,7 +73,7 @@
 
   <!-- Settings Modal -->
   <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
@@ -83,48 +82,121 @@
           </button>
         </div>
         <div class="modal-body">
-          <!-- API Key and Model Selection -->
-          <div class="form-group">
-            <label for="apiKeyInput">OpenAI API Key</label>
-            <input type="text" class="form-control" id="apiKeyInput" placeholder="Enter your API key" />
-            <small class="form-text text-muted">
-              This key will be stored in your browser (insecure).
-            </small>
-          </div>
-          <div class="form-group">
-            <label for="modelSelect">Select Model</label>
-            <select class="form-control" id="modelSelect">
-              <!-- Options will be populated from models.json -->
-            </select>
-          </div>
-          <!-- Workflow Steps Configuration -->
-          <div class="form-group">
-            <label>Workflow Steps Configuration</label>
-            <div class="d-flex align-items-center">
-              <span id="stepsFileName">steps.json</span>
-              <button class="btn btn-sm btn-info ml-2" id="editStepsBtn">Edit</button>
-              <button class="btn btn-sm btn-secondary ml-2" id="uploadStepsBtn">Select JSON</button>
-              <input type="file" id="stepsFileInput" style="display: none;" />
+          <!-- Dependencies Visualization - Now full width at the top -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">Dependencies</div>
+                <div class="card-body">
+                  <div id="dependencyVisualization" class="border p-2">
+                    <p class="text-muted">Select a step to see dependencies</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- Models Configuration -->
-          <div class="form-group">
-            <label>Models Configuration</label>
-            <div class="d-flex align-items-center">
-              <span id="modelsFileName">models.json</span>
-              <button class="btn btn-sm btn-info ml-2" id="editModelsBtn">Edit</button>
-              <button class="btn btn-sm btn-secondary ml-2" id="uploadModelsBtn">Select JSON</button>
-              <input type="file" id="modelsFileInput" style="display: none;" />
+        
+          <!-- Tab Navigation -->
+          <ul class="nav nav-tabs" id="settingsTabs">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#apiSettings">API Settings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#stepManager">Step Manager</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#advancedSettings">Advanced</a>
+            </li>
+          </ul>
+          
+          <!-- Tab Content -->
+          <div class="tab-content mt-3">
+            <!-- API Settings Tab -->
+            <div class="tab-pane fade show active" id="apiSettings">
+              <div class="form-group">
+                <label for="apiKeyInput">OpenAI API Key</label>
+                <input type="text" class="form-control" id="apiKeyInput" placeholder="Enter your API key" />
+                <small class="form-text text-muted">
+                  This key will be stored in your browser (insecure).
+                </small>
+              </div>
+              <div class="form-group">
+                <label for="modelSelect">Select Model</label>
+                <select class="form-control" id="modelSelect">
+                  <!-- Options will be populated from models.json -->
+                </select>
+              </div>
             </div>
-          </div>
-          <!-- Hidden Textareas for editing JSON -->
-          <div class="form-group" id="stepsEditorContainer" style="display: none;">
-            <label for="stepsEditor">Edit Workflow Steps JSON</label>
-            <textarea class="form-control" id="stepsEditor" rows="8"></textarea>
-          </div>
-          <div class="form-group" id="modelsEditorContainer" style="display: none;">
-            <label for="modelsEditor">Edit Models JSON</label>
-            <textarea class="form-control" id="modelsEditor" rows="4"></textarea>
+            
+            <!-- Step Manager Tab -->
+            <div class="tab-pane fade" id="stepManager">
+              <div class="row">
+                <!-- Step List Panel (Left) -->
+                <div class="col-md-4">
+                  <h5>Steps</h5>
+                  <div class="mb-2">
+                    <button class="btn btn-sm btn-success" id="addStepBtn">Add Step</button>
+                    <button class="btn btn-sm btn-info" id="importStepsBtn">Import</button>
+                    <button class="btn btn-sm btn-secondary" id="exportStepsBtn">Export</button>
+                    <button class="btn btn-sm btn-warning" id="restoreDefaultStepsBtn">Restore Defaults</button>
+                  </div>
+                  <ul id="stepList" class="list-group step-sortable">
+                    <!-- Steps will be populated here -->
+                  </ul>
+                </div>
+                
+                <!-- Step Editor Panel (Right) -->
+                <div class="col-md-8">
+                  <div id="stepEditorPanel">
+                    <h5>Step Editor</h5>
+                    <div class="form-group">
+                      <label for="stepId">Step ID</label>
+                      <input type="text" class="form-control" id="stepId">
+                      <small class="form-text text-muted">Unique identifier (no spaces, lowercase, underscores)</small>
+                    </div>
+                    <div class="form-group">
+                      <label for="stepMenuName">Menu Name</label>
+                      <input type="text" class="form-control" id="stepMenuName">
+                    </div>
+                    <div class="form-group">
+                      <label for="stepPrompt">Step Prompt</label>
+                      <div class="mb-2">
+                        <div class="dropdown d-inline-block">
+                          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="variablePickerBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Insert Variable
+                          </button>
+                          <div class="dropdown-menu" id="variablePickerMenu" aria-labelledby="variablePickerBtn">
+                            <!-- Will be populated dynamically -->
+                          </div>
+                        </div>
+                      </div>
+                      <textarea class="form-control" id="stepPrompt" rows="6"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="stepInstructions">LLM Instructions</label>
+                      <textarea class="form-control" id="stepInstructions" rows="6"></textarea>
+                    </div>
+                    <button class="btn btn-primary" id="saveStepBtn">Save Step</button>
+                    <button class="btn btn-secondary" id="cancelStepEditBtn">Cancel</button>
+                    <button class="btn btn-warning" id="resetStepBtn">Reset to Original</button>
+                    <button class="btn btn-info" id="exportStepBtn">Export as Text</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Advanced Settings Tab -->
+            <div class="tab-pane fade" id="advancedSettings">
+              <div class="form-group">
+                <label for="stepsEditor">Workflow Steps JSON</label>
+                <textarea class="form-control" id="stepsEditor" rows="8"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="modelsEditor">Models JSON</label>
+                <textarea class="form-control" id="modelsEditor" rows="4"></textarea>
+              </div>
+              <button class="btn btn-primary" id="saveAdvancedBtn">Save Changes</button>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -137,12 +209,43 @@
     </div>
   </div>
 
+  <!-- Unsaved Changes Modal -->
+  <div class="modal fade" id="unsavedChangesModal" tabindex="-1" role="dialog" aria-labelledby="unsavedChangesModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="unsavedChangesModalLabel">Unsaved Changes</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          You have unsaved changes in the current step. Would you like to save them before proceeding?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="discardChangesBtn">Discard Changes</button>
+          <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Dependencies -->
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.8/dist/purify.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+  
+  <!-- Application Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/steps.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/pdf.js"></script>
+  <script src="js/ui.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

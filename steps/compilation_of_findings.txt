@@ -1,0 +1,55 @@
+[MENU_Name]
+Compilation of Findings
+
+[STEP_PROMPT]
+Compile a comprehensive summary based on the analyses from previous steps:
+
+**Findings:**
+
+- **Sender Analysis:**
+{sender_analysis_output}
+
+- **Content Analysis:**
+{content_analysis_output}
+
+- **Links and Attachments Analysis:**
+{links_attachments_analysis_output}
+
+- **Contextual Analysis:**
+{contextual_analysis_output}
+
+**Tasks:**
+- Aggregate all identified red flags and suspicious indicators.
+- Organize the findings by categories:
+  - Sender
+  - Content
+  - Links and Attachments
+  - Context
+- Assess the overall severity of the risks (High, Medium, or Low) based on the number and severity of red flags.
+
+[LLM_INSTRUCTIONS]
+Please provide your response enclosed within the following tags:
+
+[Response]
+**Consolidated Report:**
+
+- **Sender:**
+  - Key Findings: <List key findings>
+  - Red Flags: <List red flags>
+
+- **Content:**
+  - Key Findings: <List key findings>
+  - Red Flags: <List red flags>
+
+- **Links and Attachments:**
+  - Key Findings: <List key findings>
+  - Red Flags: <List red flags>
+
+- **Context:**
+  - Key Findings: <List key findings>
+  - Red Flags: <List red flags>
+
+**Overall Risk Assessment:** <High/Medium/Low>
+
+[Response Summary]
+A brief summary: Provide a one-sentence overall risk assessment (e.g., "High risk detected due to multiple red flags across all categories.").

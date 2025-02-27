@@ -1,20 +1,144 @@
 /* style.css */
 body {
-    margin: 20px;
-  }
-  .progress {
-    height: 25px;
-  }
-  #spinner-container {
-    display: none;
-  }
-  #error-message,
-  #success-message {
-    display: none;
-  }
-  .tab-content {
-    border: 1px solid #ddd;
-    border-top: none;
-    padding: 15px;
-  }
-  
+  margin: 20px;
+}
+.progress {
+  height: 25px;
+}
+#spinner-container {
+  display: none;
+}
+#error-message,
+#success-message {
+  display: none;
+}
+.tab-content {
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 15px;
+}
+
+/* Step Manager Styles */
+.step-sortable li {
+  cursor: move;
+}
+.step-drag-handle {
+  cursor: grab;
+  color: #aaa;
+}
+#stepEditorPanel {
+  display: none;
+}
+.variable-tag {
+  background-color: #e7f3ff;
+  border: 1px solid #b3d7ff;
+  border-radius: 3px;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+#dependencyVisualization {
+  min-height: 150px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.dependency-node {
+  margin-left: 15px;
+  padding: 4px;
+}
+.dependency-arrow {
+  color: #888;
+  margin-right: 5px;
+}
+.step-badge {
+  font-size: 0.7em;
+  padding: 2px 5px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+.badge-virtual {
+  background-color: #17a2b8;
+  color: white;
+}
+.badge-modified {
+  background-color: #ffc107;
+  color: black;
+}
+
+/* Notification System */
+#notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  width: 300px;
+}
+
+.notification {
+  background-color: #fff;
+  border-left: 4px solid #4CAF50;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 15px;
+  margin-bottom: 10px;
+  animation: notificationFadeIn 0.3s ease-out;
+  position: relative;
+}
+
+.notification-error {
+  border-left-color: #f44336;
+}
+
+.notification-warning {
+  border-left-color: #ff9800;
+}
+
+.notification-info {
+  border-left-color: #2196F3;
+}
+
+.notification-success {
+  border-left-color: #4CAF50;
+}
+
+.notification-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.notification-message {
+  margin-bottom: 10px;
+}
+
+.notification-timer {
+  height: 3px;
+  background-color: #ddd;
+  width: 100%;
+  position: relative;
+}
+
+.notification-timer-progress {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width linear;
+}
+
+.notification-error .notification-timer-progress {
+  background-color: #f44336;
+}
+
+.notification-warning .notification-timer-progress {
+  background-color: #ff9800;
+}
+
+.notification-info .notification-timer-progress {
+  background-color: #2196F3;
+}
+
+@keyframes notificationFadeIn {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes notificationFadeOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(50px); }
+}

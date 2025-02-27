@@ -1,0 +1,34 @@
+[MENU_Name]
+Contextual Analysis
+
+[STEP_PROMPT]
+Based on the information below, perform a contextual and behavioral analysis:
+
+**Full Message Details:**
+{data_extraction_output}
+
+**Previous Findings:**
+- Sender Analysis Summary: {sender_analysis_summary}
+- Content Analysis Summary: {content_analysis_summary}
+- Links and Attachments Analysis Summary: {links_attachments_analysis_summary}
+
+**Tasks:**
+- Determine if the message is expected or relates to any recent activities of the recipient.
+- Check for any prior communication history with the sender (hypothetically).
+- Compare the display name with the email address for inconsistencies.
+- Verify if the reply-to address differs from the sender's address.
+- Assess the overall context and any anomalies.
+
+[LLM_INSTRUCTIONS]
+Please provide your response enclosed within the following tags:
+
+[Response]
+**Contextual Analysis Findings:**
+- Expected Message: <Yes/No, with explanation>
+- Prior Communication History: <Hypothetical assessment>
+- Display Name vs. Email Address: <Describe inconsistencies>
+- Reply-To Address Check: <Describe findings>
+- Additional Anomalies: <List any other issues>
+
+[Response Summary]
+A brief summary: Provide a one-sentence assessment of the contextual risks (e.g., "Message is unsolicited with inconsistent sender details, indicating high risk.").

@@ -1,0 +1,30 @@
+[MENU_Name]
+Recommendations
+
+[STEP_PROMPT]
+Based on the consolidated report below, provide recommendations and next steps:
+
+{compilation_of_findings_output}
+
+**Tasks:**
+- Highlight the most critical issues and significant risks that require immediate attention.
+- Suggest appropriate actions for the cyber analyst, such as:
+  - Whether further investigation is needed.
+  - Steps to verify the sender's identity (e.g., contacting the organization directly via official channels).
+  - Advising on precautionary measures (e.g., not clicking links, not opening attachments).
+  - Reporting to relevant authorities or IT departments.
+
+[LLM_INSTRUCTIONS]
+Please provide your response enclosed within the following tags:
+
+[Response]
+**Recommendations:**
+- Critical Issues: <List the most critical issues>
+- Suggested Actions:
+  - Action 1: <Description>
+  - Action 2: <Description>
+- Precautionary Measures: <List measures>
+- Reporting: <Advise on reporting procedures>
+
+[Response Summary]
+A brief summary: Provide a one-sentence recommendation (e.g., "Immediate action required; advise recipient to avoid interaction and report the message to IT security.").

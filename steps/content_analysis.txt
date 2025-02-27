@@ -1,0 +1,28 @@
+[MENU_Name]
+Content Analysis
+
+[STEP_PROMPT]
+Analyze the following message content for suspicious characteristics:
+
+{data_extraction_output}
+
+**Tasks:**
+- Identify any phrases that indicate urgency or threats.
+- Note any psychological pressure tactics used.
+- Scan for grammar and spelling errors or unusual phrasing.
+- Look for requests for personal or sensitive information.
+- Assess if the message includes unrealistic offers or prizes.
+
+[LLM_INSTRUCTIONS]
+Please provide your response enclosed within the following tags:
+
+[Response]
+**Content Analysis Findings:**
+- Urgent or Threatening Phrases: <List phrases>
+- Psychological Pressure Tactics: <Describe tactics>
+- Grammar and Spelling Issues: <Describe any issues>
+- Requests for Sensitive Information: <List requests>
+- Unrealistic Offers or Prizes: <Describe if any>
+
+[Response Summary]
+A brief summary: Provide a one-sentence assessment of the content's suspiciousness (e.g., "Content contains urgent threats and requests for personal information, indicating potential phishing.").
