@@ -64,6 +64,21 @@ body {
   color: black;
 }
 
+/* Larger modal and dropdown fixes */
+.modal-xl {
+  max-width: 90%;
+}
+
+.variable-picker-menu {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  white-space: normal;
+  word-wrap: break-word;
+}
+
 /* Notification System */
 #notification-container {
   position: fixed;
@@ -141,4 +156,29 @@ body {
 @keyframes notificationFadeOut {
   from { opacity: 1; transform: translateX(0); }
   to { opacity: 0; transform: translateX(50px); }
+}
+
+/* Add to style.css */
+.variable-picker-menu {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  min-width: 250px;
+}
+
+.dropdown-header {
+  font-weight: bold;
+  color: #495057;
+  padding: 8px 16px;
+  margin-top: 5px;
+}
+
+.dropdown-item {
+  padding: 6px 16px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.dropdown-divider {
+  margin: 8px 0;
 }

@@ -62,6 +62,11 @@ $(document).ready(function() {
         handleHistoryItemClick
       );
       
+      // If we have at least one step in editor mode, show variables menu
+      if (loadedSteps.length > 0) {
+        updateVariablePicker();
+      }
+      
       // Check if API key is missing and force open settings
       if (!apiConfig.apiKey) {
         $("#settingsModal").modal({ backdrop: 'static', keyboard: false });
@@ -71,6 +76,14 @@ $(document).ready(function() {
       NotificationSystem.error("Failed to initialize application: " + error.message);
       console.error("Initialization error:", error);
     }
+  }
+  
+  // Update the variable picker with current steps
+  function updateVariablePicker() {
+    const variables = StepManager.getAvailableVariables();
+    UIManager.updateVariablePicker('#variablePickerMenu', variables, function(variable) {
+      insertVariableIntoPrompt(variable);
+    });
   }
   
   // Handle step reordering
@@ -96,6 +109,9 @@ $(document).ready(function() {
         UIManager.showStepDependencies(step, StepManager.getCurrentSteps(), '#dependencyVisualization');
       }
     }
+    
+    // Mark that we're using custom steps
+    StepManager.setCustomStepsMode(true);
   }
   
   // Handle edit step click
@@ -129,10 +145,7 @@ $(document).ready(function() {
     UIManager.populateStepEditor(step);
     
     // Update variable picker
-    const variables = StepManager.getAvailableVariables();
-    UIManager.updateVariablePicker('#variablePickerMenu', variables, function(variable) {
-      insertVariableIntoPrompt(variable);
-    });
+    updateVariablePicker();
     
     // Show dependencies
     UIManager.showStepDependencies(step, steps, '#dependencyVisualization');
@@ -189,6 +202,9 @@ $(document).ready(function() {
         $('#stepEditorPanel').hide();
       }
       
+      // Update variable picker
+      updateVariablePicker();
+      
       NotificationSystem.success("Step deleted successfully");
     }
   }
@@ -219,6 +235,9 @@ $(document).ready(function() {
         handleCloneStepClick,
         handleDeleteStepClick
       );
+      
+      // Update variable picker
+      updateVariablePicker();
       
       // If ID changed, update editor
       if (stepId !== result.step.id) {
@@ -455,6 +474,9 @@ $(document).ready(function() {
       return;
     }
     
+    // Reset custom mode flag
+    StepManager.setCustomStepsMode(false);
+    
     // Load default steps
     StepManager.loadSteps(true).then(steps => {
       UIManager.renderStepList(
@@ -463,6 +485,9 @@ $(document).ready(function() {
         handleCloneStepClick,
         handleDeleteStepClick
       );
+      
+      // Update variable picker
+      updateVariablePicker();
       
       // Hide editor panel
       $('#stepEditorPanel').hide();
@@ -480,6 +505,9 @@ $(document).ready(function() {
       return;
     }
     
+    // Reset custom mode flag
+    StepManager.setCustomStepsMode(false);
+    
     ConfigManager.resetToDefaults(keepAPIKey).then(({ defaultSteps, defaultModels }) => {
       // Update UI
       UIManager.populateModelDropdown(defaultModels);
@@ -496,6 +524,9 @@ $(document).ready(function() {
           handleCloneStepClick,
           handleDeleteStepClick
         );
+        
+        // Update variable picker
+        updateVariablePicker();
         
         // Hide editor panel
         $('#stepEditorPanel').hide();
@@ -576,6 +607,9 @@ $(document).ready(function() {
       handleDeleteStepClick
     );
     
+    // Update variable picker
+    updateVariablePicker();
+    
     // Edit the new step
     editStep(newStep.id);
     
@@ -613,6 +647,9 @@ $(document).ready(function() {
         handleCloneStepClick,
         handleDeleteStepClick
       );
+      
+      // Update variable picker
+      updateVariablePicker();
       
       $("#settingsModal").modal("show");
     });
