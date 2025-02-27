@@ -15,7 +15,7 @@ PhishPhind: AI Email Scanner is a **static web application** designed to streaml
 
 ## Default Analysis Steps
 
-PhishPhind will use the default set of analysis steps in the steps.json to provide a security assessment of an email. The application processes these steps sequentially: for each step, it sends a prompt to the LLM and waits for a response before proceeding to the next step. This allows each step to build upon the findings of the previous ones. The default steps are:
+PhishPhind will perform a default set of analysis steps sequentially: for each step, it sends a prompt to the LLM and waits for a response before proceeding to the next step. This allows each step to build upon the findings of the previous ones. The default steps are:
 
 1.  **Data Extraction:** Extracts key information from the email, such as sender details, recipient details, subject line, message body, attachments, and links.
 2.  **Sender Analysis:** Analyzes the sender's information to determine its legitimacy, checking for domain anomalies, free email services, and other red flags.
@@ -28,6 +28,7 @@ PhishPhind will use the default set of analysis steps in the steps.json to provi
 ## Understanding the Analysis Steps (Customization)
 
 The core of the analysis process is driven by the steps defined in the `config/steps.json` file. These steps can be overridden and customized via the settings modal within the web application. Each step represents a distinct stage in the analysis workflow, allowing for a modular and customizable approach. Here's a breakdown of the key components within each step:
+
 
 -   `name`: A unique identifier for the step (e.g., `"data_extraction"`). This is used internally to reference the step's output in subsequent steps.
 -   `menuName`: The name displayed in the user interface for this step (e.g., `"Extract Data"`).
