@@ -69,13 +69,30 @@ $(document).ready(function() {
       
       // Check if API key is missing and force open settings
       if (!apiConfig.apiKey) {
-        $("#settingsModal").modal({ backdrop: 'static', keyboard: false });
-        $("#settingsModal").modal('show');
+        TailwindModal.showModal('settingsModal');
       }
+      
+      // Initialize back button for step editor
+      $('#backToStepsBtn').on('click', function() {
+        handleBackToSteps();
+      });
     } catch (error) {
       NotificationSystem.error("Failed to initialize application: " + error.message);
       console.error("Initialization error:", error);
     }
+  }
+  
+  // Handle back button click
+  function handleBackToSteps() {
+    if (handleUnsavedChanges(() => {
+      UIManager.hideStepEditorMode();
+      StepManager.setCurrentEditingStep(null);
+    })) {
+      return;
+    }
+    
+    UIManager.hideStepEditorMode();
+    StepManager.setCurrentEditingStep(null);
   }
   
   // Update the variable picker with current steps
@@ -199,7 +216,7 @@ $(document).ready(function() {
       
       // Hide editor if we deleted the current step
       if (StepManager.getCurrentEditingStep() === null) {
-        $('#stepEditorPanel').hide();
+        UIManager.hideStepEditorMode();
       }
       
       // Update variable picker
@@ -338,6 +355,9 @@ $(document).ready(function() {
         
         stepNumber++;
       });
+
+      // Show export button
+      $('#exportContainer').removeClass('hidden');
     });
   }
   
@@ -408,6 +428,9 @@ $(document).ready(function() {
             '#analysisHistory',
             handleHistoryItemClick
           );
+
+          // Show export button
+          $('#exportContainer').removeClass('hidden');
         },
         onError: (error) => {
           UIManager.hideSpinner();
@@ -436,7 +459,7 @@ $(document).ready(function() {
     
     // Close settings modal only if API key is provided
     if (apiKey) {
-      $('#settingsModal').modal('hide');
+      TailwindModal.hideModal('settingsModal');
     } else {
       NotificationSystem.warning("API key is required to continue.");
     }
@@ -490,7 +513,7 @@ $(document).ready(function() {
       updateVariablePicker();
       
       // Hide editor panel
-      $('#stepEditorPanel').hide();
+      UIManager.hideStepEditorMode();
       StepManager.setCurrentEditingStep(null);
       
       NotificationSystem.success("Default steps restored!");
@@ -529,7 +552,7 @@ $(document).ready(function() {
         updateVariablePicker();
         
         // Hide editor panel
-        $('#stepEditorPanel').hide();
+        UIManager.hideStepEditorMode();
         StepManager.setCurrentEditingStep(null);
       });
       
@@ -629,12 +652,15 @@ $(document).ready(function() {
   
   // EVENT HANDLERS
   
-  // Prevent closing settings modal if API key is empty
-  $('#settingsModal').on('hide.bs.modal', function(e) {
-    const apiKey = $('#apiKeyInput').val().trim();
-    if (!apiKey) {
-      e.preventDefault();
-      NotificationSystem.warning("API key is required to continue.");
+  // When a file is chosen in the "Upload Message File" section
+  $("#messageFile").on("change", function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        $("#messageText").val(e.target.result);
+      };
+      reader.readAsText(file);
     }
   });
   
@@ -651,7 +677,7 @@ $(document).ready(function() {
       // Update variable picker
       updateVariablePicker();
       
-      $("#settingsModal").modal("show");
+      TailwindModal.showModal("settingsModal");
     });
   });
   
@@ -676,13 +702,13 @@ $(document).ready(function() {
   // Cancel step editing button
   $("#cancelStepEditBtn").click(function() {
     if (handleUnsavedChanges(() => {
-      $('#stepEditorPanel').hide();
+      UIManager.hideStepEditorMode();
       StepManager.setCurrentEditingStep(null);
     })) {
       return;
     }
     
-    $('#stepEditorPanel').hide();
+    UIManager.hideStepEditorMode();
     StepManager.setCurrentEditingStep(null);
   });
   
@@ -709,16 +735,4 @@ $(document).ready(function() {
   
   // Track changes in step form fields
   $("#stepId, #stepMenuName, #stepPrompt, #stepInstructions").on('input', trackStepChanges);
-  
-  // When a file is chosen in the "Load Message" section
-  $("#messageFile").on("change", function(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        $("#messageText").val(e.target.result);
-      };
-      reader.readAsText(file);
-    }
-  });
 });
