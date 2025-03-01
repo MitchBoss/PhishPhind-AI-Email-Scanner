@@ -272,7 +272,7 @@ const UIManager = (function() {
     // Create new tab
     const tabLink = $(`
       <a id="tab-${result.stepName}" href="#${tabId}" class="text-gray-500 hover:text-gray-700 hover:border-gray-300 px-3 py-2 font-medium text-sm border-b-2 border-transparent transition-all duration-200 flex-shrink-0" role="tab">
-        <span class="mr-1 text-green-500 hidden checkmark-${result.stepName}">✓</span>
+        <span class="tab-spinner"></span>
         <span>${result.menuName}</span>
       </a>
     `);
@@ -315,7 +315,7 @@ const UIManager = (function() {
       $(`#${tabId}`).show();
       
       // Scroll tab into view if needed
-      this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      this[0].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     });
     
     // If this is the first tab, show it
@@ -325,13 +325,16 @@ const UIManager = (function() {
       tabContent.show();
     }
     
-    // Mark previous steps as completed
+    // Show checkmarks for previous steps
     if (result.stepNumber > 1) {
       for (let i = 1; i < result.stepNumber; i++) {
         const tabs = $(tabsSelector).find('a');
         if (tabs.length >= i) {
-          const checkmark = $(tabs[i-1]).find('[class^="checkmark-"]');
-          checkmark.removeClass('hidden');
+          const spinner = $(tabs[i-1]).find('.tab-spinner');
+          if (spinner.length) {
+            const checkmark = $('<span class="text-green-500 mr-2">✓</span>');
+            spinner.replaceWith(checkmark);
+          }
         }
       }
     }
@@ -383,20 +386,72 @@ const UIManager = (function() {
   
   /* Update progress bar */
   function updateProgressBar(current, total) {
-    const pct = Math.round((current / total) * 100);
-    const progressBar = $("#progress-bar");
+    const progressBar = document.getElementById('progress-bar');
+    const progressContainer = progressBar ? progressBar.parentElement : null;
     
-    progressBar.css("width", pct + "%");
-    progressBar.text(pct + "%");
+    if (!progressBar || !progressContainer) return;
+    
+    const pct = Math.round((current / total) * 100);
+    progressBar.style.width = pct + "%";
+    
+    // Create or update the progress text element
+    let progressText = document.getElementById('progress-text');
+    if (!progressText) {
+      progressText = document.createElement('div');
+      progressText.id = 'progress-text';
+      progressContainer.appendChild(progressText);
+    }
+    
+    // Set progress text with both percentage and step count
+    progressText.innerHTML = `${pct}% <span style="opacity: 0.9; font-size: 0.7rem;">(${current} of ${total} steps)</span>`;
     
     // Add completion animation when progress reaches 100%
     if (pct === 100) {
-      progressBar.addClass('complete');
+      progressBar.classList.add('complete');
       
-      // Show checkmarks for all completed steps
-      $('[class^="checkmark-"]').removeClass('hidden');
+      // Update all tab indicators when complete
+      document.querySelectorAll('.tab-spinner').forEach(spinner => {
+        // Create checkmark to replace spinner
+        const checkmark = document.createElement('span');
+        checkmark.className = 'text-green-500 mr-2';
+        checkmark.textContent = '✓';
+        
+        // Replace spinner with checkmark
+        spinner.parentNode.replaceChild(checkmark, spinner);
+      });
     } else {
-      progressBar.removeClass('complete');
+      progressBar.classList.remove('complete');
+      
+      // Update tab indicators based on current progress
+      document.querySelectorAll('[id^="tab-"]').forEach((tab, index) => {
+        const stepNum = index + 1;
+        
+        // Find existing spinner or checkmark
+        const existingIndicator = tab.querySelector('.tab-spinner, .text-green-500.mr-2');
+        
+        // Update indicator based on step status
+        if (stepNum < current) {
+          // Completed step - should have checkmark
+          if (existingIndicator && existingIndicator.classList.contains('tab-spinner')) {
+            // Replace spinner with checkmark
+            const checkmark = document.createElement('span');
+            checkmark.className = 'text-green-500 mr-2';
+            checkmark.textContent = '✓';
+            existingIndicator.parentNode.replaceChild(checkmark, existingIndicator);
+          }
+        } else if (stepNum === current) {
+          // Current step - should have spinner
+          if (!existingIndicator || !existingIndicator.classList.contains('tab-spinner')) {
+            // Add or replace with spinner
+            if (existingIndicator) {
+              existingIndicator.remove();
+            }
+            const spinner = document.createElement('span');
+            spinner.className = 'tab-spinner';
+            tab.insertBefore(spinner, tab.firstChild);
+          }
+        }
+      });
     }
   }
   

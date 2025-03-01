@@ -97,6 +97,18 @@ body.modal-open {
   100% { transform: rotate(360deg); }
 }
 
+.tab-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(93, 66, 196, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid #5d42c4;
+  animation: spin 1s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
 /* Notification system */
 .notification {
   background-color: white;
@@ -187,6 +199,7 @@ select:focus {
 /* Improved progress bar */
 .relative.pt-1.mb-6 {
   margin-top: 1rem;
+  position: relative;
 }
 
 .overflow-hidden.h-2.text-xs.flex.rounded.bg-gray-200 {
@@ -203,17 +216,30 @@ select:focus {
   background: linear-gradient(90deg, #5d42c4 0%, #7a61e0 100%);
   box-shadow: 0 2px 4px rgba(93, 66, 196, 0.2);
   border-radius: 8px;
-  font-size: 0px; /* Hide text initially */
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 40px; /* Ensure there's always room for the text */
 }
 
 #progress-bar.complete {
   animation: progressPulse 1.5s ease-in-out;
-  font-size: 0.75rem; /* Show text when complete */
-  font-weight: bold;
+}
+
+#progress-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  z-index: 5;
 }
 
 @keyframes progressPulse {
@@ -241,6 +267,8 @@ select:focus {
   padding: 0.5rem 1rem;
   border-bottom: 2px solid transparent;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 #resultTabs a.active {

@@ -6,7 +6,9 @@ const AnalysisModule = (function() {
   // Module state
   const state = {
     currentAnalysis: null,
-    isAnalyzing: false
+    isAnalyzing: false,
+    currentStep: 0,
+    totalSteps: 0
   };
   
   // Initialize module
@@ -53,9 +55,26 @@ const AnalysisModule = (function() {
       // Render history
       renderHistory();
       
+      // Make sure progress bar has progress text element
+      ensureProgressTextElement();
+      
       console.log('Analysis module mounted successfully');
     } catch (error) {
       console.error('Error mounting analysis module:', error);
+    }
+  }
+  
+  // Ensure progress text element exists
+  function ensureProgressTextElement() {
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) {
+      const progressContainer = progressBar.parentElement;
+      if (progressContainer && !document.getElementById('progress-text')) {
+        const progressText = document.createElement('div');
+        progressText.id = 'progress-text';
+        progressText.innerHTML = `0% <span style="opacity: 0.9; font-size: 0.7rem;">(0 of 0 steps)</span>`;
+        progressContainer.appendChild(progressText);
+      }
     }
   }
   
@@ -246,6 +265,10 @@ const AnalysisModule = (function() {
         }];
       }
       
+      // Store total steps for progress tracking
+      state.totalSteps = steps.length;
+      state.currentStep = 0;
+      
       updateProgressBar(0, steps.length);
       
       let stepResults = {};
@@ -253,6 +276,9 @@ const AnalysisModule = (function() {
       for (let i = 0; i < steps.length; i++) {
         const step = steps[i];
         const stepNumber = i + 1;
+        
+        // Update current step for progress tracking
+        state.currentStep = stepNumber;
         
         console.log(`Processing step ${stepNumber}/${steps.length}: ${step.menuName}`);
         updateProgressBar(stepNumber - 1, steps.length);
@@ -422,12 +448,19 @@ const AnalysisModule = (function() {
     tabLink.className = 'text-gray-500 hover:text-gray-700 hover:border-gray-300 px-3 py-2 font-medium text-sm border-b-2 border-transparent transition-all duration-200 flex-shrink-0';
     tabLink.setAttribute('role', 'tab');
     
-    // Add completion indicator
-    const completionMark = document.createElement('span');
-    completionMark.className = 'mr-1 text-green-500 hidden';
-    completionMark.textContent = '✓';
-    completionMark.id = `complete-${result.stepId}`;
-    tabLink.appendChild(completionMark);
+    // Add status indicator (spinner or checkmark)
+    if (result.stepNumber < state.currentStep) {
+      // This is a completed step
+      const completionMark = document.createElement('span');
+      completionMark.className = 'text-green-500 mr-2';
+      completionMark.textContent = '✓';
+      tabLink.appendChild(completionMark);
+    } else if (result.stepNumber === state.currentStep) {
+      // This is the current in-progress step
+      const spinner = document.createElement('span');
+      spinner.className = 'tab-spinner';
+      tabLink.appendChild(spinner);
+    }
     
     // Add tab text as a separate span
     const tabText = document.createElement('span');
@@ -491,26 +524,18 @@ const AnalysisModule = (function() {
       tabContent.style.display = 'block';
     }
     
-    // Mark previous steps as completed
+    // Convert previous step spinners to checkmarks
     if (result.stepNumber > 1) {
-      for (let i = 1; i < result.stepNumber; i++) {
-        const prevStepId = `complete-${getStepIdByNumber(i)}`;
-        const prevCompleteMark = document.getElementById(prevStepId);
-        if (prevCompleteMark) {
-          prevCompleteMark.classList.remove('hidden');
+      resultTabs.querySelectorAll('.tab-spinner').forEach(spinner => {
+        const tabElement = spinner.parentElement;
+        if (tabElement && tabElement !== tabLink) {
+          // Replace spinner with checkmark
+          const checkmark = document.createElement('span');
+          checkmark.className = 'text-green-500 mr-2';
+          checkmark.textContent = '✓';
+          spinner.parentNode.replaceChild(checkmark, spinner);
         }
-      }
-    }
-    
-    // Function to get step ID by step number (helper)
-    function getStepIdByNumber(number) {
-      // This is an approximation - might need adjustment based on your app's logic
-      const tabElements = resultTabs.querySelectorAll('a');
-      if (tabElements.length >= number) {
-        const tabId = tabElements[number-1].id;
-        return tabId.replace('tab-', '');
-      }
-      return result.stepId; // Fallback
+      });
     }
   }
   
@@ -568,6 +593,9 @@ const AnalysisModule = (function() {
     window.StepService.getSteps().then(steps => {
       // Display each step result
       let stepNumber = 1;
+      state.totalSteps = steps.length;
+      state.currentStep = steps.length; // All steps complete when loading history
+      
       steps.forEach(step => {
         const output = historyItem.results[`${step.id}_output`] || "";
         const summary = historyItem.results[`${step.id}_summary`] || "";
@@ -589,6 +617,9 @@ const AnalysisModule = (function() {
       if (exportContainer) {
         exportContainer.classList.remove('hidden');
       }
+      
+      // Update progress bar to 100%
+      updateProgressBar(steps.length, steps.length);
     });
   }
   
@@ -637,22 +668,37 @@ const AnalysisModule = (function() {
    */
   function updateProgressBar(current, total) {
     const progressBar = document.getElementById('progress-bar');
-    if (!progressBar) return;
+    const progressContainer = progressBar ? progressBar.parentElement : null;
+    
+    if (!progressBar || !progressContainer) return;
     
     const pct = Math.round((current / total) * 100);
     progressBar.style.width = pct + "%";
     
-    // Update text content with percentage
-    progressBar.textContent = pct + "%";
+    // Create or update the progress text element
+    let progressText = document.getElementById('progress-text');
+    if (!progressText) {
+      progressText = document.createElement('div');
+      progressText.id = 'progress-text';
+      progressContainer.appendChild(progressText);
+    }
+    
+    // Set progress text with both percentage and step count
+    progressText.innerHTML = `${pct}% <span style="opacity: 0.9; font-size: 0.7rem;">(${current} of ${total} steps)</span>`;
     
     // Add completion animation when progress reaches 100%
     if (pct === 100) {
       progressBar.classList.add('complete');
       
-      // Mark all step tabs as completed
-      const completionMarks = document.querySelectorAll('[id^="complete-"]');
-      completionMarks.forEach(mark => {
-        mark.classList.remove('hidden');
+      // Update all tab indicators when complete
+      document.querySelectorAll('.tab-spinner').forEach(spinner => {
+        // Create checkmark to replace spinner
+        const checkmark = document.createElement('span');
+        checkmark.className = 'text-green-500 mr-2';
+        checkmark.textContent = '✓';
+        
+        // Replace spinner with checkmark
+        spinner.parentNode.replaceChild(checkmark, spinner);
       });
     } else {
       progressBar.classList.remove('complete');
