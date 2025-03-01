@@ -1,0 +1,262 @@
+/* themes.css - Theme variables and color scheme */
+
+:root {
+    /* Brand Colors */
+    --color-brand-purple: #5d42c4;
+    --color-brand-purple-light: #7a61e0;
+    --color-brand-purple-dark: #4b35a0;
+    --color-brand-blue: #3474e0;
+    --color-brand-blue-light: #5990f2;
+    
+    /* Neutrals */
+    --color-white: #ffffff;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+    --color-black: #000000;
+    
+    /* Functional Colors */
+    --color-success: #10b981; /* Emerald 500 */
+    --color-success-light: #a7f3d0; /* Emerald 200 */
+    --color-success-dark: #065f46; /* Emerald 800 */
+    
+    --color-info: #3b82f6; /* Blue 500 */
+    --color-info-light: #bfdbfe; /* Blue 200 */
+    --color-info-dark: #1e40af; /* Blue 800 */
+    
+    --color-warning: #f59e0b; /* Amber 500 */
+    --color-warning-light: #fde68a; /* Amber 200 */
+    --color-warning-dark: #92400e; /* Amber 800 */
+    
+    --color-danger: #ef4444; /* Red 500 */
+    --color-danger-light: #fecaca; /* Red 200 */
+    --color-danger-dark: #991b1b; /* Red 800 */
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+    
+    /* Font Sizes */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 3rem;
+    --font-size-6xl: 3.75rem;
+    --font-size-7xl: 4.5rem;
+    --font-size-8xl: 6rem;
+    --font-size-9xl: 8rem;
+    
+    /* Spacing */
+    --spacing-0: 0;
+    --spacing-1: 0.25rem;
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-4: 1rem;
+    --spacing-5: 1.25rem;
+    --spacing-6: 1.5rem;
+    --spacing-8: 2rem;
+    --spacing-10: 2.5rem;
+    --spacing-12: 3rem;
+    --spacing-16: 4rem;
+    --spacing-20: 5rem;
+    --spacing-24: 6rem;
+    --spacing-32: 8rem;
+    --spacing-40: 10rem;
+    --spacing-48: 12rem;
+    --spacing-56: 14rem;
+    --spacing-64: 16rem;
+    
+    /* Border Radius */
+    --radius-none: 0;
+    --radius-sm: 0.125rem;
+    --radius-md: 0.25rem;
+    --radius-lg: 0.375rem;
+    --radius-xl: 0.5rem;
+    --radius-2xl: 0.75rem;
+    --radius-3xl: 1rem;
+    --radius-full: 9999px;
+    
+    /* Z-index */
+    --z-0: 0;
+    --z-10: 10;
+    --z-20: 20;
+    --z-30: 30;
+    --z-40: 40;
+    --z-50: 50;
+    --z-auto: auto;
+  }
+  
+  /* Dark theme variables */
+  [data-theme="dark"] {
+    /* Neutrals */
+    --color-white: #111827;
+    --color-gray-50: #1f2937;
+    --color-gray-100: #374151;
+    --color-gray-200: #4b5563;
+    --color-gray-300: #6b7280;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #d1d5db;
+    --color-gray-600: #e5e7eb;
+    --color-gray-700: #f3f4f6;
+    --color-gray-800: #f9fafb;
+    --color-gray-900: #ffffff;
+    --color-black: #ffffff;
+    
+    /* Brand Colors - slightly adjusted for dark mode */
+    --color-brand-purple: #7a61e0;
+    --color-brand-purple-light: #9a85ec;
+    --color-brand-purple-dark: #5d42c4;
+    
+    /* Functional Colors - adjusted for dark mode */
+    --color-success: #34d399; /* Emerald 400 */
+    --color-success-light: #065f46; /* Emerald 800 */
+    --color-success-dark: #ecfdf5; /* Emerald 50 */
+    
+    --color-info: #60a5fa; /* Blue 400 */
+    --color-info-light: #1e40af; /* Blue 800 */
+    --color-info-dark: #eff6ff; /* Blue 50 */
+    
+    --color-warning: #fbbf24; /* Amber 400 */
+    --color-warning-light: #92400e; /* Amber 800 */
+    --color-warning-dark: #fffbeb; /* Amber 50 */
+    
+    --color-danger: #f87171; /* Red 400 */
+    --color-danger-light: #991b1b; /* Red 800 */
+    --color-danger-dark: #fef2f2; /* Red 50 */
+    
+    /* Shadows - darker in dark mode */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.16);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.14);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  }
+  
+  /* Apply theme colors to elements */
+  body {
+    background-color: var(--color-gray-50);
+    color: var(--color-gray-800);
+  }
+  
+  /* Form elements */
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="number"],
+  input[type="url"],
+  input[type="tel"],
+  input[type="search"],
+  textarea,
+  select {
+    border-color: var(--color-gray-300);
+    background-color: var(--color-white);
+    color: var(--color-gray-800);
+  }
+  
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="url"]:focus,
+  input[type="tel"]:focus,
+  input[type="search"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--color-brand-purple);
+    box-shadow: 0 0 0 3px rgba(var(--color-brand-purple), 0.2);
+  }
+  
+  /* Buttons */
+  .btn {
+    border-radius: var(--radius-md);
+    padding: var(--spacing-2) var(--spacing-4);
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-primary {
+    background-color: var(--color-brand-purple);
+    color: var(--color-white);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--color-brand-purple-light);
+  }
+  
+  .btn-secondary {
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-800);
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--color-gray-300);
+  }
+  
+  .btn-success {
+    background-color: var(--color-success);
+    color: var(--color-white);
+  }
+  
+  .btn-success:hover {
+    background-color: var(--color-success-dark);
+  }
+  
+  .btn-danger {
+    background-color: var(--color-danger);
+    color: var(--color-white);
+  }
+  
+  .btn-danger:hover {
+    background-color: var(--color-danger-dark);
+  }
+  
+  /* Other common elements */
+  .card {
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
+  
+  .alert {
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+  
+  .alert-success {
+    background-color: var(--color-success-light);
+    color: var(--color-success-dark);
+  }
+  
+  .alert-info {
+    background-color: var(--color-info-light);
+    color: var(--color-info-dark);
+  }
+  
+  .alert-warning {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning-dark);
+  }
+  
+  .alert-danger {
+    background-color: var(--color-danger-light);
+    color: var(--color-danger-dark);
+  }

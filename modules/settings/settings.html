@@ -1,0 +1,201 @@
+<h2 class="text-2xl font-semibold text-center mb-6">Settings</h2>
+
+<!-- Tab Navigation -->
+<div class="border-b border-gray-200 mb-6">
+  <nav class="flex space-x-8" id="settingsTabs">
+    <a href="#" data-tab="apiSettings" class="border-brand-purple text-brand-purple whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-link">
+      API Settings
+    </a>
+    <a href="#" data-tab="stepManager" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-link">
+      Step Manager
+    </a>
+    <a href="#" data-tab="advancedSettings" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-link">
+      Advanced
+    </a>
+  </nav>
+</div>
+
+<!-- Tab Content -->
+<div class="tab-content-container">
+  <!-- API Settings Tab -->
+  <div id="apiSettings" class="tab-content block">
+    <div class="bg-white rounded p-4 mb-6">
+      <h3 class="text-lg font-medium mb-3">API Configuration</h3>
+      <div class="mb-4">
+        <label for="apiKeyInput" class="block text-sm font-medium text-gray-700 mb-1">OpenAI API Key</label>
+        <input type="text" id="apiKeyInput" placeholder="Enter your API key" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
+      </div>
+      <div class="mb-4">
+        <label for="modelSelect" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+        <select id="modelSelect" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
+          <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+          <option value="gpt-4">GPT-4</option>
+          <option value="gpt-4o-mini">GPT-4o Mini</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Step Manager Tab -->
+  <div id="stepManager" class="tab-content hidden">
+    <!-- Dependencies Visualization -->
+    <div class="mb-6">
+      <div class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200">
+        <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+          <h3 class="text-sm font-medium text-gray-700">Dependencies</h3>
+        </div>
+        <div class="p-4">
+          <div id="dependencyVisualization" class="border rounded-md p-4 max-h-40 overflow-y-auto">
+            <p class="text-gray-500">Select a step to see dependencies</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Steps List and Editor Container -->
+    <div id="stepsGrid" class="grid-area-steps">
+      <h3 class="text-lg font-medium text-gray-700 mb-2">Steps</h3>
+      <div class="mb-3 flex flex-wrap gap-2">
+        <button id="addStepBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Add
+        </button>
+        <button id="importStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-brand-purple bg-brand-purple bg-opacity-10 hover:bg-opacity-20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Import
+        </button>
+        <button id="exportStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Export
+        </button>
+        <button id="restoreDefaultStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Restore
+        </button>
+      </div>
+      <ul id="stepList" class="bg-white shadow-sm rounded-md border border-gray-200 divide-y divide-gray-200 step-sortable mb-4">
+        <li class="p-4 text-center text-gray-500">Loading steps...</li>
+      </ul>
+    </div>
+    
+    <!-- Step Editor Container (Hidden initially) -->
+    <div id="stepEditorContainer" class="hidden grid-area-editor">
+      <button id="backToStepsBtn" class="back-button mb-4 inline-flex items-center px-2.5 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Steps
+      </button>
+      
+      <div id="stepEditorPanel">
+        <h3 class="text-lg font-medium text-gray-700 mb-4">Step Editor</h3>
+        <div class="space-y-4">
+          <div>
+            <label for="stepId" class="block text-sm font-medium text-gray-700 mb-1">Step ID</label>
+            <input type="text" id="stepId" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
+            <p class="mt-1 text-xs text-gray-500">Unique identifier (no spaces, lowercase, underscores)</p>
+          </div>
+          <div>
+            <label for="stepMenuName" class="block text-sm font-medium text-gray-700 mb-1">Menu Name</label>
+            <input type="text" id="stepMenuName" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
+          </div>
+          <div>
+            <label for="stepPrompt" class="block text-sm font-medium text-gray-700 mb-1">Step Prompt</label>
+            <div class="mb-2">
+              <div class="relative inline-block text-left">
+                <div>
+                  <button type="button" id="variablePickerBtn" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Insert Variable
+                  </button>
+                </div>
+                <div id="variablePickerMenu" class="hidden origin-top-left absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none variable-picker-menu z-10" role="menu" aria-orientation="vertical" aria-labelledby="variablePickerBtn">
+                  <!-- Will be populated dynamically -->
+                </div>
+              </div>
+            </div>
+            <textarea id="stepPrompt" rows="6" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border"></textarea>
+          </div>
+          <div>
+            <label for="stepInstructions" class="block text-sm font-medium text-gray-700 mb-1">LLM Instructions</label>
+            <textarea id="stepInstructions" rows="6" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border"></textarea>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="saveStepBtn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Save Step
+            </button>
+            <button id="cancelStepEditBtn" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Cancel
+            </button>
+            <button id="resetStepBtn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Reset
+            </button>
+            <button id="exportStepBtn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Advanced Settings Tab -->
+  <div id="advancedSettings" class="tab-content hidden">
+    <div class="mb-4">
+      <label for="stepsEditor" class="block text-sm font-medium text-gray-700 mb-2">Workflow Steps JSON</label>
+      <textarea id="stepsEditor" rows="8" class="font-mono shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border"></textarea>
+    </div>
+    <div class="mb-4">
+      <label for="modelsEditor" class="block text-sm font-medium text-gray-700 mb-2">Models JSON</label>
+      <textarea id="modelsEditor" rows="4" class="font-mono shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border"></textarea>
+    </div>
+    <button id="saveAdvancedBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      Save Changes
+    </button>
+  </div>
+</div>
+
+<!-- Reset Buttons -->
+<div class="mt-8 pt-4 border-t border-gray-200 flex justify-between">
+  <div class="flex gap-2">
+    <button id="fullResetBtn" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200">
+      Full Reset
+    </button>
+    <button id="resetConfigBtn" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-100 text-base font-medium text-yellow-700 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200">
+      Reset Defaults
+    </button>
+  </div>
+  <div class="flex gap-2">
+    <button class="close-modal-btn inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+      Close
+    </button>
+    <button id="saveSettingsBtn" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-purple text-base font-medium text-white hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+      Save Settings
+    </button>
+  </div>
+</div>
