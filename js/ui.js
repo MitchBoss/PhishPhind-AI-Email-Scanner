@@ -271,8 +271,9 @@ const UIManager = (function() {
     
     // Create new tab
     const tabLink = $(`
-      <a id="tab-${result.stepName}" href="#${tabId}" class="text-gray-500 hover:text-gray-700 hover:border-gray-300 px-4 py-2 font-medium text-sm border-b-2 border-transparent transition-all duration-200" role="tab">
-        ${result.menuName}
+      <a id="tab-${result.stepName}" href="#${tabId}" class="text-gray-500 hover:text-gray-700 hover:border-gray-300 px-3 py-2 font-medium text-sm border-b-2 border-transparent transition-all duration-200 flex-shrink-0" role="tab">
+        <span class="mr-1 text-green-500 hidden checkmark-${result.stepName}">✓</span>
+        <span>${result.menuName}</span>
       </a>
     `);
     
@@ -283,7 +284,7 @@ const UIManager = (function() {
     const mdSummary = marked.parse(result.summary || "");
     const sanitizedSummary = DOMPurify.sanitize(mdSummary);
     
-    // Remove the 'fade' class which was causing issues with visibility
+    // Create tab content
     const tabContent = $(`
       <div id="${tabId}" class="tab-pane" role="tabpanel" style="display: none;">
         <h3 class="text-xl font-semibold text-gray-800 mb-3">${DOMPurify.sanitize(result.menuName)}</h3>
@@ -312,6 +313,9 @@ const UIManager = (function() {
       $(this).removeClass('text-gray-500 hover:text-gray-700 border-transparent');
       $(this).addClass('border-brand-purple text-brand-purple');
       $(`#${tabId}`).show();
+      
+      // Scroll tab into view if needed
+      this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     });
     
     // If this is the first tab, show it
@@ -319,6 +323,17 @@ const UIManager = (function() {
       tabLink.removeClass('text-gray-500 hover:text-gray-700 border-transparent');
       tabLink.addClass('border-brand-purple text-brand-purple');
       tabContent.show();
+    }
+    
+    // Mark previous steps as completed
+    if (result.stepNumber > 1) {
+      for (let i = 1; i < result.stepNumber; i++) {
+        const tabs = $(tabsSelector).find('a');
+        if (tabs.length >= i) {
+          const checkmark = $(tabs[i-1]).find('[class^="checkmark-"]');
+          checkmark.removeClass('hidden');
+        }
+      }
     }
   }
   
@@ -369,7 +384,20 @@ const UIManager = (function() {
   /* Update progress bar */
   function updateProgressBar(current, total) {
     const pct = Math.round((current / total) * 100);
-    $("#progress-bar").css("width", pct + "%").text(pct + "%");
+    const progressBar = $("#progress-bar");
+    
+    progressBar.css("width", pct + "%");
+    progressBar.text(pct + "%");
+    
+    // Add completion animation when progress reaches 100%
+    if (pct === 100) {
+      progressBar.addClass('complete');
+      
+      // Show checkmarks for all completed steps
+      $('[class^="checkmark-"]').removeClass('hidden');
+    } else {
+      progressBar.removeClass('complete');
+    }
   }
   
   /* Show unsaved changes confirmation modal */
