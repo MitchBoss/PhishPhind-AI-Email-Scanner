@@ -1,0 +1,9 @@
+/* settings/settings.css */
+
+/* New style for draggable list items while dragging */
+#stepList li.drag-active {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+    z-index: 10;
+  }
+  
