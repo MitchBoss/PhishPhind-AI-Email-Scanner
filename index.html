@@ -24,9 +24,65 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  
+  <!-- Third-party Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.8/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+  
+  <style>
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      transform: scale(0.95);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    
+    .modal-content.modal-enter {
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    .modal-content.modal-leave {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+  </style>
 </head>
 <body class="bg-white text-gray-800">
+  <!-- Global App Namespace -->
+  <script>
+    // Create a global namespace for our app
+    window.PhishPhind = {};
+  </script>
+
   <!-- Top Navigation Menu -->
   <nav class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,13 +99,13 @@
           </a>
         </div>
         <div class="flex items-center">
-          <button id="aboutBtn" class="mr-2 inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none">
+          <button id="aboutBtn" data-module="about" class="mr-2 inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             About
           </button>
-          <button id="openSettingsBtn" class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+          <button id="settingsBtn" data-module="settings" class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -63,10 +119,13 @@
 
   <!-- Notification Container -->
   <div id="notification-container" class="fixed top-4 right-4 z-50 w-80"></div>
+  
+  <!-- Modal Container - will be populated dynamically -->
+  <div id="modalContainer" class="hidden"></div>
 
-  <!-- Main Content -->
+  <!-- Main Content Area -->
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="mainContent">
-    <!-- Analysis Input -->
+    <!-- Email Input Section (Always Visible) -->
     <div class="mb-6">
       <h2 class="text-lg font-medium text-gray-900 mb-2">Upload Message File</h2>
       <div class="w-full border-2 border-gray-300 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-brand-purple transition-colors duration-200" id="dropzone">
@@ -94,7 +153,7 @@
         Start Analysis
       </button>
     </div>
-
+    
     <!-- Spinner & Progress -->
     <div id="spinner-container" class="text-center mb-6 hidden">
       <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-brand-purple">
@@ -111,367 +170,219 @@
       </div>
     </div>
 
-    <!-- Results Tabs -->
-    <div class="mb-6">
-      <div class="border-b border-gray-200">
-        <nav class="-mb-px flex space-x-8" id="resultTabs" role="tablist">
-          <!-- Tab items will be dynamically added here -->
-        </nav>
-      </div>
-      <div class="bg-white rounded-lg p-6" id="resultTabsContent">
-        <!-- Tab content will be dynamically added here -->
-      </div>
-    </div>
-
-    <!-- Export PDF Button -->
-    <div class="mb-8 hidden" id="exportContainer">
-      <button id="savePdfBtn" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-        Export Analysis as PDF
-      </button>
-    </div>
-
-    <!-- Analysis History -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300">
-      <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
-        <h2 class="text-lg font-medium text-gray-900">Analysis History</h2>
-      </div>
-      <div class="p-4" id="analysisHistory">
-        <p class="text-gray-500">No previous analyses.</p>
-      </div>
-    </div>
+    <!-- Module Container (Dynamic Content) -->
+    <div id="moduleContainer" class="module-container border border-gray-200 rounded-lg p-4 min-h-[200px]"></div>
   </div>
 
-  <!-- About Modal -->
-  <div id="aboutModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="aboutModalLabel" aria-hidden="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" id="aboutModalBackdrop"></div>
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-          <div class="sm:flex sm:items-start">
-            <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
-              <h3 class="text-2xl font-semibold text-gray-900 text-center mb-6" id="aboutModalLabel">
-                PhishPhind AI Email Scanner
-              </h3>
-              
+  <!-- Core JavaScript - Load in dependency order -->
+  <script src="core/persistence.js"></script>
+  <script src="core/eventBus.js"></script>
+  <script src="core/services.js"></script>
+  
+  <!-- Services -->
+  <script src="services/notificationService.js"></script>
+  <script src="services/configService.js"></script>
+  <script src="services/apiService.js"></script>
+  <script src="services/historyService.js"></script>
+  <script src="services/pdfService.js"></script>
+  <script src="services/stepService.js"></script>
+  
+  <!-- UI Components -->
+  <script src="core/windowManager.js"></script>
+  <script src="core/modalModules.js"></script>
+  <script src="core/moduleManager.js"></script>
+  
+  <!-- Main App -->
+  <script src="core/app.js"></script>
+  
+  <!-- Directory creation and fallback script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create necessary directories for our modules
+      const directories = [
+        'modules/about',
+        'modules/settings',
+        'modules/analysis'
+      ];
+      
+      // If modules fail to load, ensure the navigation still works
+      document.getElementById('aboutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (window.ModalModules && typeof window.ModalModules.showModal === 'function') {
+          window.ModalModules.showModal('about');
+        } else {
+          // Fallback implementation
+          showSimpleModal('about');
+        }
+      });
+      
+      document.getElementById('settingsBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (window.ModalModules && typeof window.ModalModules.showModal === 'function') {
+          window.ModalModules.showModal('settings');
+        } else {
+          // Fallback implementation
+          showSimpleModal('settings');
+        }
+      });
+      
+      // Simple modal implementation for fallback
+      function showSimpleModal(type) {
+        let title, content;
+        
+        if (type === 'about') {
+          title = 'PhishPhind AI Email Scanner';
+          content = `
+            <div class="text-center mb-6">
               <div class="flex justify-center mb-6">
-                <div class="p-3 rounded-full bg-brand-blue-light bg-opacity-10">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-brand-blue" viewBox="0 0 24 24" fill="currentColor">
+                <div class="p-3 rounded-full bg-blue-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
                   </svg>
                 </div>
               </div>
-              
-              <div class="mt-2 text-center sm:text-left">
-                <p class="text-base text-gray-700 mb-4">
-                  PhishPhind is an advanced tool that uses AI to analyze emails for potential phishing threats and malicious content.
-                </p>
-                
-                <!-- Disclaimer -->
-                <p class="text-sm text-gray-500 mb-4">
-                  Disclaimer: This project is a proof of concept demonstrating a UI for using LLMs to perform multi-step analysis 
-                  of emails for malicious content. It is not intended to be effective or reliable in its current state and should 
-                  not be used for real-world security analysis.
-                </p>
-              
-                <h4 class="text-lg font-medium text-gray-900 mb-2">Key features:</h4>
-                <ul class="text-base text-gray-700 space-y-2 ml-5 list-disc">
-                  <li>Multi-step analysis of email content</li>
-                  <li>Detection of suspicious sender patterns</li>
-                  <li>Link and attachment investigation</li>
-                  <li>Contextual analysis for social engineering</li>
-                  <li>Detailed reports and recommendations</li>
-                </ul>
-                
-                <p class="text-sm text-gray-500 mt-6">
-                  Version alpha 0.1.0
-                  <br />
-                  <a 
-                    href="https://github.com/MitchBoss" 
-                    target="_blank" 
-                    class="text-blue-500 hover:underline"
-                  >
-                    https://github.com/MitchBoss
-                  </a>
-                </p>
-              </div>
-              
-              
             </div>
-          </div>
-        </div>
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-          <button type="button" id="closeAboutBtn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-purple text-base font-medium text-white hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple sm:ml-3 sm:w-auto sm:text-sm">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Settings Modal -->
-  <div id="settingsModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="settingsModalLabel" aria-hidden="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" id="settingsModalBackdrop"></div>
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-          <div class="sm:flex sm:items-start">
-            <div class="w-full">
-              <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="settingsModalLabel">Settings</h3>
-              
-              <!-- Tab Navigation -->
-              <div class="border-b border-gray-200">
-                <nav class="-mb-px flex space-x-8" id="settingsTabs">
-                  <a class="border-brand-purple text-brand-purple whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="apiSettings" href="#">
-                    API Settings
-                  </a>
-                  <a class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="stepManager" href="#">
-                    Step Manager
-                  </a>
-                  <a class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="advancedSettings" href="#">
-                    Advanced
-                  </a>
-                </nav>
-              </div>
-              
-              <!-- Tab Content -->
-              <div class="py-4">
-                <!-- API Settings Tab -->
-                <div id="apiSettings" class="tab-content block">
+            
+            <p class="mb-4">PhishPhind is an advanced tool that uses AI to analyze emails for potential phishing threats and malicious content.</p>
+            
+            <div class="bg-gray-50 p-4 rounded-md border border-gray-200 mb-6">
+              <p class="text-sm text-gray-700">
+                <strong>Disclaimer:</strong> This project is a proof of concept demonstrating a UI for using LLMs to perform multi-step analysis 
+                of emails for malicious content. It is not intended to be effective or reliable in its current state and should 
+                not be used for real-world security analysis.
+              </p>
+            </div>
+          
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Key features:</h3>
+            <ul class="text-base text-gray-700 space-y-2 ml-5 list-disc">
+              <li>Multi-step analysis of email content</li>
+              <li>Detection of suspicious sender patterns</li>
+              <li>Link and attachment investigation</li>
+              <li>Contextual analysis for social engineering</li>
+              <li>Detailed reports and recommendations</li>
+            </ul>
+          `;
+        } else if (type === 'settings') {
+          title = 'Settings';
+          content = `
+            <div class="settings-module">
+              <div class="mb-6">
+                <div class="bg-white rounded p-4">
+                  <h3 class="text-lg font-medium mb-3">API Configuration</h3>
                   <div class="mb-4">
-                    <label for="apiKeyInput" class="block text-sm font-medium text-gray-700 mb-2">OpenAI API Key</label>
+                    <label for="apiKeyInput" class="block text-sm font-medium text-gray-700 mb-1">OpenAI API Key</label>
                     <input type="text" id="apiKeyInput" placeholder="Enter your API key" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
-                    <p class="mt-1 text-sm text-gray-500">This key will be stored in your browser (insecure).</p>
                   </div>
                   <div class="mb-4">
-                    <label for="modelSelect" class="block text-sm font-medium text-gray-700 mb-2">Select Model</label>
-                    <select id="modelSelect" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-brand-purple focus:border-brand-purple sm:text-sm transition-all duration-200">
-                      <!-- Options will be populated from models.json -->
+                    <label for="modelSelect" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                    <select id="modelSelect" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
+                      <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                      <option value="gpt-4">GPT-4</option>
+                      <option value="gpt-4o-mini">GPT-4o Mini</option>
                     </select>
                   </div>
-                </div>
-                
-                <!-- Step Manager Tab -->
-                <div id="stepManager" class="tab-content hidden">
-                  <!-- Dependencies Visualization -->
-                  <div class="mb-6">
-                    <div class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200">
-                      <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                        <h3 class="text-sm font-medium text-gray-700">Dependencies</h3>
-                      </div>
-                      <div class="p-4">
-                        <div id="dependencyVisualization" class="border rounded-md p-4 max-h-40 overflow-y-auto">
-                          <p class="text-gray-500">Select a step to see dependencies</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Steps List and Editor Container -->
-                  <div id="stepsGrid">
-                    <h3 class="text-lg font-medium text-gray-700 mb-2">Steps</h3>
-                    <div class="mb-3 flex flex-wrap gap-2">
-                      <button id="addStepBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Add
-                      </button>
-                      <button id="importStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-brand-purple bg-brand-purple bg-opacity-10 hover:bg-opacity-20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Import
-                      </button>
-                      <button id="exportStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Export
-                      </button>
-                      <button id="restoreDefaultStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Restore
-                      </button>
-                    </div>
-                    <ul id="stepList" class="bg-white shadow-sm rounded-md border border-gray-200 divide-y divide-gray-200 step-sortable">
-                      <!-- Steps will be populated here -->
-                    </ul>
-                  </div>
-                  
-                  <!-- Step Editor Container (Hidden initially) -->
-                  <div id="stepEditorContainer" class="hidden">
-                    <button id="backToStepsBtn" class="back-button hidden mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                      </svg>
-                      Back to Steps
-                    </button>
-                    
-                    <div id="stepEditorPanel">
-                      <h3 class="text-lg font-medium text-gray-700 mb-4">Step Editor</h3>
-                      <div class="space-y-4">
-                        <div>
-                          <label for="stepId" class="block text-sm font-medium text-gray-700 mb-1">Step ID</label>
-                          <input type="text" id="stepId" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
-                          <p class="mt-1 text-xs text-gray-500">Unique identifier (no spaces, lowercase, underscores)</p>
-                        </div>
-                        <div>
-                          <label for="stepMenuName" class="block text-sm font-medium text-gray-700 mb-1">Menu Name</label>
-                          <input type="text" id="stepMenuName" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
-                        </div>
-                        <div>
-                          <label for="stepPrompt" class="block text-sm font-medium text-gray-700 mb-1">Step Prompt</label>
-                          <div class="mb-2">
-                            <div class="relative inline-block text-left">
-                              <div>
-                                <button type="button" id="variablePickerBtn" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                  </svg>
-                                  Insert Variable
-                                </button>
-                              </div>
-                              <div id="variablePickerMenu" class="hidden origin-top-left absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none variable-picker-menu z-10" role="menu" aria-orientation="vertical" aria-labelledby="variablePickerBtn">
-                                <!-- Will be populated dynamically -->
-                              </div>
-                            </div>
-                          </div>
-                          <textarea id="stepPrompt" rows="6" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border"></textarea>
-                        </div>
-                        <div>
-                          <label for="stepInstructions" class="block text-sm font-medium text-gray-700 mb-1">LLM Instructions</label>
-                          <textarea id="stepInstructions" rows="6" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border"></textarea>
-                        </div>
-                        <div class="flex flex-wrap gap-2">
-                          <button id="saveStepBtn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            Save Step
-                          </button>
-                          <button id="cancelStepEditBtn" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Cancel
-                          </button>
-                          <button id="resetStepBtn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            Reset
-                          </button>
-                          <button id="exportStepBtn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                            </svg>
-                            Export
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Advanced Settings Tab -->
-                <div id="advancedSettings" class="tab-content hidden">
-                  <div class="mb-4">
-                    <label for="stepsEditor" class="block text-sm font-medium text-gray-700 mb-2">Workflow Steps JSON</label>
-                    <textarea id="stepsEditor" rows="8" class="font-mono shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border"></textarea>
-                  </div>
-                  <div class="mb-4">
-                    <label for="modelsEditor" class="block text-sm font-medium text-gray-700 mb-2">Models JSON</label>
-                    <textarea id="modelsEditor" rows="4" class="font-mono shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border"></textarea>
-                  </div>
-                  <button id="saveAdvancedBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Save Changes
+                  <button id="saveApiSettingsBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+                    Save Settings
                   </button>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-          <button type="button" id="saveSettingsBtn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-purple text-base font-medium text-white hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple sm:ml-3 sm:w-auto sm:text-sm transition-all duration-200">
-            Save Settings
-          </button>
-          <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm closeSettings transition-all duration-200">
-            Close
-          </button>
-          <button type="button" id="resetConfigBtn" class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-100 text-base font-medium text-yellow-700 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-200">
-            Reset Defaults
-          </button>
-          <button type="button" id="fullResetBtn" class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:w-auto sm:text-sm transition-all duration-200">
-            Full Reset
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Unsaved Changes Modal -->
-  <div id="unsavedChangesModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="unsavedChangesModalLabel" aria-hidden="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-          <div class="sm:flex sm:items-start">
-            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
-              <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
+          `;
+        }
+        
+        // Create modal overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.id = `simple-modal-${type}`;
+        
+        // Create content
+        overlay.innerHTML = `
+          <div class="modal-content">
+            <h2 class="text-2xl font-semibold text-center mb-6">${title}</h2>
+            <div class="modal-body">
+              ${content}
             </div>
-            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-              <h3 class="text-lg leading-6 font-medium text-gray-900" id="unsavedChangesModalLabel">
-                Unsaved Changes
-              </h3>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">
-                  You have unsaved changes in the current step. Would you like to save them before proceeding?
-                </p>
-              </div>
+            <div class="mt-6 text-center">
+              <button class="close-modal-btn inline-flex items-center px-6 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+                Close
+              </button>
             </div>
           </div>
-        </div>
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-          <button type="button" id="saveChangesBtn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-purple text-base font-medium text-white hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple sm:ml-3 sm:w-auto sm:text-sm transition-all duration-200">
-            Save Changes
-          </button>
-          <button type="button" id="discardChangesBtn" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-200">
-            Discard Changes
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Dependencies -->
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.8/dist/purify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
-  
-  <!-- Application Scripts -->
-  <script src="js/config.js"></script>
-  <script src="js/notifications.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/steps.js"></script>
-  <script src="js/history.js"></script>
-  <script src="js/pdf.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/tailwind-modal.js"></script>
-  <script src="js/app.js"></script>
+        `;
+        
+        // Add to body
+        document.body.appendChild(overlay);
+        
+        // Start animation
+        setTimeout(() => {
+          overlay.querySelector('.modal-content').classList.add('modal-enter');
+        }, 10);
+        
+        // Add close handler
+        overlay.querySelector('.close-modal-btn').addEventListener('click', function() {
+          const modalContent = overlay.querySelector('.modal-content');
+          modalContent.classList.remove('modal-enter');
+          modalContent.classList.add('modal-leave');
+          
+          setTimeout(() => {
+            if (overlay.parentNode) {
+              overlay.parentNode.removeChild(overlay);
+            }
+          }, 300);
+        });
+        
+        // Settings modal special handling
+        if (type === 'settings') {
+          setTimeout(() => {
+            const saveBtn = overlay.querySelector('#saveApiSettingsBtn');
+            if (saveBtn && window.ConfigService) {
+              saveBtn.addEventListener('click', function() {
+                const apiKey = overlay.querySelector('#apiKeyInput').value;
+                const model = overlay.querySelector('#modelSelect').value;
+                
+                window.ConfigService.saveApiConfig(apiKey, model);
+                if (window.NotificationService) {
+                  window.NotificationService.success('API settings saved');
+                }
+                
+                // Close modal
+                const modalContent = overlay.querySelector('.modal-content');
+                modalContent.classList.remove('modal-enter');
+                modalContent.classList.add('modal-leave');
+                
+                setTimeout(() => {
+                  if (overlay.parentNode) {
+                    overlay.parentNode.removeChild(overlay);
+                  }
+                }, 300);
+              });
+              
+              // Populate with current settings
+              const config = window.ConfigService.getApiConfig();
+              if (config) {
+                const apiKeyInput = overlay.querySelector('#apiKeyInput');
+                const modelSelect = overlay.querySelector('#modelSelect');
+                
+                if (apiKeyInput && config.apiKey) {
+                  apiKeyInput.value = config.apiKey;
+                }
+                
+                if (modelSelect && config.model) {
+                  modelSelect.value = config.model;
+                }
+              }
+            }
+          }, 100);
+        }
+      }
+      
+      // Make sure the analysis module gets loaded
+      setTimeout(() => {
+        if (window.ModuleManager && typeof window.ModuleManager.loadModule === 'function') {
+          window.ModuleManager.loadModule('analysis');
+        }
+      }, 500);
+    });
+  </script>
 </body>
 </html>
