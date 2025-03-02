@@ -1,0 +1,27 @@
+<div class="form-group {{groupModifier}}">
+  {{#if label}}
+  <label for="{{id}}" class="form-label {{#if required}}form-label--required{{/if}}">{{label}}</label>
+  {{/if}}
+  
+  <div class="input textarea {{modifier}}">
+    <textarea 
+      class="input__field" 
+      id="{{id}}" 
+      name="{{name}}" 
+      placeholder="{{placeholder}}"
+      rows="{{rows}}"
+      {{#if required}}required{{/if}}
+      {{#if readonly}}readonly{{/if}}
+      {{#if disabled}}disabled{{/if}}
+      {{#if maxlength}}maxlength="{{maxlength}}"{{/if}}
+    >{{value}}</textarea>
+  </div>
+  
+  {{#if helpText}}
+  <div class="form-help">{{helpText}}</div>
+  {{/if}}
+  
+  {{#if errorMessage}}
+  <div class="form-error">{{errorMessage}}</div>
+  {{/if}}
+</div> 

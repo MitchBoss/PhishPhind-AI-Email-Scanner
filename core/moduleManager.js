@@ -39,15 +39,27 @@ window.ModuleManager = (function() {
      */
     async function registerBuiltInModules() {
       try {
-        // Manually load module scripts (simpler approach)
-        await Promise.all([
-          loadScript('modules/about/about.js'),
-          loadScript('modules/analysis/analysis.js'),
-          loadScript('modules/settings/settings.js')
-        ]);
+        // Create an array of module scripts to load
+        const moduleScripts = [
+          'modules/about/about.js',
+          'modules/analysis/analysis.js',
+          'modules/settings/settings.js',
+          'modules/history/history.js'  // Add history module
+        ];
+        
+        // Load each script with better error handling
+        for (const script of moduleScripts) {
+          try {
+            await loadScript(script);
+            console.log(`Successfully loaded: ${script}`);
+          } catch (error) {
+            console.warn(`Non-critical error loading module script ${script}:`, error);
+            // Continue loading other modules
+          }
+        }
         
         // Each module will call registerModule on load
-        console.log('Built-in modules loaded:', Array.from(modules.keys()));
+        console.log('Built-in modules registered:', Array.from(modules.keys()));
       } catch (error) {
         console.error('Failed to register built-in modules:', error);
         throw error;
@@ -99,9 +111,9 @@ window.ModuleManager = (function() {
     }
     
     /**
-     * Load a module
+     * Load a module by ID
      * @param {string} moduleId - ID of the module to load
-     * @returns {Promise} - Resolves when module is loaded
+     * @returns {Promise<boolean>} - true if successful
      */
     async function loadModule(moduleId) {
       // First ensure the module is registered
@@ -154,29 +166,38 @@ window.ModuleManager = (function() {
         }
         
         // Mount the module
-        try {
-          await module.mount(contentContainer);
-        } catch (error) {
-          console.error(`Failed to mount module "${moduleId}":`, error);
-          throw error;
+        if (module.mount) {
+          try {
+            await module.mount(contentContainer);
+          } catch (error) {
+            console.error(`Failed to mount module "${moduleId}":`, error);
+            throw error;
+          }
         }
         
-        // Set as active module
-        activeModule = module;
+        // Update active module reference
+        activeModule = moduleId;
         
-        // Publish module loaded event
+        // Trigger module:loaded event for other components to respond
         if (window.EventBus) {
-          window.EventBus.publish('module:loaded', moduleId);
+          window.EventBus.publish('module:loaded', { moduleId: moduleId });
         }
         
-        return module;
+        // Update navigation if NavigationManager is available
+        if (window.NavigationManager && typeof window.NavigationManager.setActiveItem === 'function') {
+          window.NavigationManager.setActiveItem(moduleId);
+        }
+        
+        console.log(`Module "${moduleId}" loaded successfully`);
+        return true;
       } catch (error) {
         console.error(`Failed to load module "${moduleId}":`, error);
-        // Add a fallback error display in the container
+        
+        // Show error in the container
         contentContainer.innerHTML = `
-          <div class="p-4 bg-red-100 text-red-700 rounded-md">
-            <h3 class="font-bold mb-2">Error Loading Module</h3>
-            <p>${error.message || 'Unknown error'}</p>
+          <div class="p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            <h3 class="text-lg font-semibold">Error Loading Module</h3>
+            <p>Failed to load the "${moduleId}" module: ${error.message}</p>
           </div>
         `;
         throw error;

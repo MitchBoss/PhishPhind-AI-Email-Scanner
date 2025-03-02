@@ -1,0 +1,71 @@
+<div id="{{id}}" class="sidebar {{#if collapsed}}sidebar--collapsed{{/if}} {{#if right}}sidebar--right{{/if}} {{#if dark}}sidebar--dark{{/if}} {{#if hidden}}sidebar--hidden{{/if}} {{#if visible}}sidebar--visible{{/if}} {{modifier}}">
+  {{#if header}}
+  <div class="sidebar__header">
+    {{#if title}}
+    <h2 class="sidebar__title">{{title}}</h2>
+    {{/if}}
+    
+    {{#if collapsible}}
+    <button class="sidebar__collapse-btn" aria-label="{{#if collapsed}}Expand{{else}}Collapse{{/if}} Sidebar" data-sidebar-toggle>
+      {{#if collapsed}}
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 17l5-5-5-5"></path><path d="M6 17l5-5-5-5"></path></svg>
+      {{else}}
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17l-5-5 5-5"></path><path d="M18 17l-5-5 5-5"></path></svg>
+      {{/if}}
+    </button>
+    {{/if}}
+  </div>
+  {{/if}}
+  
+  {{#if sections}}
+  {{#each sections}}
+  {{#if title}}
+  <h3 class="sidebar__section-title">{{title}}</h3>
+  {{/if}}
+  
+  <ul class="sidebar__nav">
+    {{#each items}}
+    <li class="sidebar__item">
+      <a href="{{url}}" class="sidebar__link {{#if active}}sidebar__link--active{{/if}}" {{#if target}}target="{{target}}"{{/if}} {{#if action}}data-action="{{action}}"{{/if}}>
+        {{#if icon}}
+        <span class="sidebar__link-icon">{{{icon}}}</span>
+        {{/if}}
+        <span class="sidebar__link-text">{{text}}</span>
+        {{#if badge}}
+        <span class="sidebar__badge">{{badge}}</span>
+        {{/if}}
+      </a>
+    </li>
+    {{/each}}
+  </ul>
+  
+  {{#if divider}}
+  <div class="sidebar__divider"></div>
+  {{/if}}
+  {{/each}}
+  {{else}}
+  {{#if items}}
+  <ul class="sidebar__nav">
+    {{#each items}}
+    <li class="sidebar__item">
+      <a href="{{url}}" class="sidebar__link {{#if active}}sidebar__link--active{{/if}}" {{#if target}}target="{{target}}"{{/if}} {{#if action}}data-action="{{action}}"{{/if}}>
+        {{#if icon}}
+        <span class="sidebar__link-icon">{{{icon}}}</span>
+        {{/if}}
+        <span class="sidebar__link-text">{{text}}</span>
+        {{#if badge}}
+        <span class="sidebar__badge">{{badge}}</span>
+        {{/if}}
+      </a>
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+  {{/if}}
+  
+  {{{content}}}
+</div>
+
+{{#if overlay}}
+<div class="sidebar__overlay" data-sidebar-overlay></div>
+{{/if}} 

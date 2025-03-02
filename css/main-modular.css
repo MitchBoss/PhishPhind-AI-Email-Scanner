@@ -1,0 +1,34 @@
+/* 
+ * main-modular.css - Main CSS entry point
+ * 
+ * This file imports all the modular CSS components in the correct order.
+ * The order is important to ensure proper cascade and inheritance.
+ */
+
+/* Base Styles - These establish the foundation */
+@import 'base/variables.css';
+@import 'base/base.css';
+@import 'base/layout.css';
+@import 'base/animations.css';
+
+/* Components - These are modular, reusable UI pieces */
+@import 'components/button.css';
+@import 'components/notification.css';
+@import 'components/card.css';
+@import 'components/modal.css';
+@import 'components/form.css';
+@import 'components/tabs.css';
+@import 'components/table.css';
+@import 'components/navigation.css';
+
+/* Add additional component imports here as they are created:
+@import 'components/spinner.css';
+@import 'components/panel.css';
+etc. */
+
+/* 
+ * Legacy CSS files
+ * These will be gradually phased out as components are modularized
+ */
+@import 'utilities.css';
+@import 'themes.css'; 

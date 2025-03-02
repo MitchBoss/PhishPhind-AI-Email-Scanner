@@ -13,9 +13,9 @@ const SettingsModule = (function() {
     
     // Tab sizing information for smooth transitions
     const tabSizes = {
-      apiSettings: { width: 800, height: 'auto' },
+      apiSettings: { width: 400, height: 'auto' },
       stepManager: { width: 800, height: 'auto' },
-      advancedSettings: { width: 800, height: 'auto' }
+      advancedSettings: { width: 500, height: 'auto' }
     };
     
     // Track sortable list
@@ -29,60 +29,315 @@ const SettingsModule = (function() {
         window.EventBus.subscribe('config:models:updated', handleModelsUpdate);
         window.EventBus.subscribe('config:steps:updated', handleStepsUpdate);
         window.EventBus.subscribe('modal:shown', handleModalShown);
+        window.EventBus.subscribe('settings:open', openSettings);
       }
       
       // Preload data
       if (window.ConfigService) {
-        state.models = window.ConfigService.getModels();
+        try {
+          // Use getModels instead of getAvailableModels
+          state.models = window.ConfigService.getModels() || [];
+        } catch (error) {
+          console.error('Error loading models:', error);
+          state.models = []; // Set default empty array
+        }
       }
       
       if (window.StepService) {
+        try {
         state.steps = await window.StepService.getSteps();
+        } catch (error) {
+          console.error('Error loading steps:', error);
+          state.steps = []; // Set default empty array
+        }
       }
       
       console.log('Settings module initialized');
       return true;
     }
     
+    /**
+     * Opens the settings modal
+     */
+    function openSettings() {
+      if (window.ModalModules && typeof window.ModalModules.showModal === 'function') {
+        window.ModalModules.showModal('settings');
+      } else {
+        console.error('ModalModules not available, cannot show settings');
+      }
+    }
+    
     // Mount the module
     async function mount(container) {
-      // Load HTML template
-      const response = await fetch('modules/settings/settings.html');
-      const html = await response.text();
-      container.innerHTML = html;
+      try {
+        // Ensure container is a valid DOM element
+        if (!container || !(container instanceof Element)) {
+          console.error('Invalid container provided to settings module:', container);
+          return false;
+        }
       
-      // Initialize tabs
-      initTabs();
-      
-      // Populate forms
-      populateApiSettings();
-      populateModels();
-      populateStepManager();
-      populateAdvancedSettings();
-      
-      // Initialize sortable
-      initSortable();
-      
-      // Set up event handlers
+        // Clear container
+        container.innerHTML = '';
+        
+        // Create main card for settings
+        try {
+          const settingsCard = await ComponentLoader.createCard({
+            title: 'Settings',
+            contentClass: 'p-0', // Remove padding for tab content
+            fullWidth: true
+          });
+          
+          // Verify that settingsCard is a DOM element
+          if (!settingsCard || !(settingsCard instanceof Element)) {
+            console.error('ComponentLoader.createCard did not return a valid DOM element');
+            container.innerHTML = '<div class="error-message">Error: Failed to create settings card</div>';
+            return false;
+          }
+          
+          // Create tabs
+          const tabs = await ComponentLoader.createTabs({
+            id: 'settingsTabs',
+            tabs: [
+              { id: 'apiSettings', text: 'API Settings', active: true },
+              { id: 'stepManager', text: 'Step Manager' },
+              { id: 'advancedSettings', text: 'Advanced' }
+            ],
+            onTabChange: (tabId) => {
+              // Resize modal based on tab
+              if (tabSizes[tabId]) {
+                const modal = document.querySelector('.modal-container');
+                if (modal) {
+                  modal.style.width = tabSizes[tabId].width + 'px';
+                  modal.style.height = tabSizes[tabId].height;
+                }
+              }
+            }
+          });
+          
+          // Verify that tabs is a DOM element
+          if (!tabs || !(tabs instanceof Element)) {
+            console.error('ComponentLoader.createTabs did not return a valid DOM element');
+            container.innerHTML = '<div class="error-message">Error: Failed to create settings tabs</div>';
+            return false;
+          }
+          
+          // API Settings Content
+          const apiSettingsContent = document.createElement('div');
+          apiSettingsContent.id = 'apiSettings';
+          apiSettingsContent.className = 'tab-content block';
+          
+          const apiConfigCard = ComponentLoader.createCard({
+            contentClass: 'p-4',
+            content: `
+              <h3 class="text-lg font-medium mb-3">API Configuration</h3>
+              <div class="mb-4">
+                <label for="apiKeyInput" class="block text-sm font-medium text-gray-700 mb-1">OpenAI API Key</label>
+                <input type="text" id="apiKeyInput" placeholder="Enter your API key" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
+              </div>
+              <div class="mb-4">
+                <label for="modelSelect" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                <select id="modelSelect" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
+                  ${state.models.map(model => `<option value="${model.id}">${model.name}</option>`).join('')}
+                </select>
+              </div>
+            `
+          });
+          
+          apiSettingsContent.appendChild(apiConfigCard);
+          
+          // Step Manager Content
+          const stepManagerContent = document.createElement('div');
+          stepManagerContent.id = 'stepManager';
+          stepManagerContent.className = 'tab-content hidden';
+          
+          // Dependencies visualization
+          const dependenciesCard = ComponentLoader.createCard({
+            headerContent: `<h3 class="text-sm font-medium text-gray-700">Dependencies</h3>`,
+            content: `
+              <div id="dependencyVisualization" class="border rounded-md p-4 max-h-40 overflow-y-auto">
+                <p class="text-gray-500">Select a step to see dependencies</p>
+              </div>
+            `
+          });
+          
+          // Steps list and editor container
+          const stepsContainer = document.createElement('div');
+          stepsContainer.id = 'stepsGrid';
+          stepsContainer.className = 'grid-area-steps mt-6';
+          
+          const stepsToolbar = document.createElement('div');
+          stepsToolbar.innerHTML = `
+            <h3 class="text-lg font-medium text-gray-700 mb-2">Steps</h3>
+            <div class="mb-3 flex flex-wrap gap-2">
+              <button id="addStepBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add
+              </button>
+              <button id="importStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-brand-purple bg-brand-purple bg-opacity-10 hover:bg-opacity-20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Import
+              </button>
+              <button id="exportStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Export
+              </button>
+              <button id="restoreDefaultStepsBtn" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Restore
+              </button>
+            </div>
+          `;
+          
+          // Create step list
+          const stepListCard = ComponentLoader.createCard({
+            content: `
+              <ul id="stepList" class="bg-white divide-y divide-gray-200 step-sortable">
+                ${state.steps.length > 0 ? 
+                  state.steps.map((step, index) => `
+                    <li class="p-4 flex justify-between items-center step-item" data-id="${step.id}">
+                      <div class="flex items-center">
+                        <span class="step-drag-handle mr-2 cursor-move">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                          </svg>
+                        </span>
+                        <div>
+                          <span class="font-medium">${step.name}</span>
+                          <p class="text-xs text-gray-500">${step.description}</p>
+                        </div>
+                      </div>
+                      <div class="flex space-x-2">
+                        <button class="edit-step-btn text-brand-purple hover:text-brand-purple-dark" data-id="${step.id}">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button class="delete-step-btn text-red-600 hover:text-red-800" data-id="${step.id}">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </li>
+                  `).join('') : 
+                  '<li class="p-4 text-center text-gray-500">No steps configured. Click "Add" to create a step.</li>'
+                }
+              </ul>
+            `,
+            contentClass: 'p-0'
+          });
+          
+          stepsContainer.appendChild(stepsToolbar);
+          stepsContainer.appendChild(stepListCard);
+          
+          // Step Editor (Hidden initially)
+          const stepEditorContainer = document.createElement('div');
+          stepEditorContainer.id = 'stepEditorContainer';
+          stepEditorContainer.className = 'hidden grid-area-editor';
+          
+          const backButton = document.createElement('button');
+          backButton.id = 'backToStepsBtn';
+          backButton.className = 'back-button mb-4 inline-flex items-center px-2.5 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-colors duration-200';
+          backButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Steps
+          `;
+          
+          // Step editor will be populated when a step is selected
+          const stepEditorPanel = document.createElement('div');
+          stepEditorPanel.id = 'stepEditorPanel';
+          
+          stepEditorContainer.appendChild(backButton);
+          stepEditorContainer.appendChild(stepEditorPanel);
+          
+          // Advanced Settings Content
+          const advancedSettingsContent = document.createElement('div');
+          advancedSettingsContent.id = 'advancedSettings';
+          advancedSettingsContent.className = 'tab-content hidden';
+          
+          // Create advanced settings card
+          const advancedSettingsCard = ComponentLoader.createCard({
+            content: `
+              <h3 class="text-lg font-medium mb-3">Advanced Configuration</h3>
+              <div class="mb-4">
+                <label for="debugModeToggle" class="flex items-center cursor-pointer">
+                  <div class="relative">
+                    <input type="checkbox" id="debugModeToggle" class="sr-only">
+                    <div class="block bg-gray-200 w-10 h-6 rounded-full"></div>
+                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition"></div>
+                  </div>
+                  <div class="ml-3 text-gray-700 font-medium">Debug Mode</div>
+                </label>
+                <p class="text-sm text-gray-500 mt-1">Enables detailed console logging for debugging purposes.</p>
+              </div>
+            `
+          });
+          
+          advancedSettingsContent.appendChild(advancedSettingsCard);
+          
+          // Append tab content to tabs
+          const tabContentContainer = document.createElement('div');
+          tabContentContainer.className = 'tab-content-container';
+          tabContentContainer.appendChild(apiSettingsContent);
+          tabContentContainer.appendChild(stepManagerContent);
+          tabContentContainer.appendChild(advancedSettingsContent);
+          
+          // Append step manager content
+          stepManagerContent.appendChild(dependenciesCard);
+          stepManagerContent.appendChild(stepsContainer);
+          stepManagerContent.appendChild(stepEditorContainer);
+          
+          // Assemble settings component
+          settingsCard.querySelector('.card-content').appendChild(tabs);
+          settingsCard.querySelector('.card-content').appendChild(tabContentContainer);
+          
+          // Append the main card to the container
+          container.appendChild(settingsCard);
+          
+          // Setup event handlers after DOM is updated
       setupEventHandlers();
       
-      console.log('Settings module mounted');
+          // Initialize form values
+          populateFormValues();
+        } catch (error) {
+          console.error('Error creating settings card:', error);
+          container.innerHTML = `<div class="error-message">Error mounting settings module: ${error.message}</div>`;
+          return false;
+        }
+        
+        return true;
+      } catch (error) {
+        console.error('Error in settings module mount:', error);
+        if (container && container.innerHTML) {
+          container.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+        }
+        return false;
+      }
     }
     
     // Unmount the module
     function unmount() {
       // Check for unsaved changes
       if (state.hasUnsavedChanges) {
-        if (!confirm('You have unsaved changes. Discard changes?')) {
+        if (!confirm('You have unsaved changes. Are you sure you want to discard them?')) {
           return false;
         }
-        state.hasUnsavedChanges = false;
       }
       
       // Clean up sortable
-      if (sortable) {
-        sortable.destroy();
-        sortable = null;
+      const stepList = document.getElementById('stepList');
+      if (stepList && window.Sortable && stepList.sortable) {
+        stepList.sortable.destroy();
       }
       
       console.log('Settings module unmounted');
@@ -323,7 +578,7 @@ const SettingsModule = (function() {
       state.models.forEach(model => {
         const option = document.createElement('option');
         option.value = model.id;
-        option.textContent = model.displayName;
+        option.textContent = model.name;
         modelSelect.appendChild(option);
       });
       
@@ -512,7 +767,7 @@ const SettingsModule = (function() {
         li.innerHTML = `
           <div class="step-drag-handle mr-2 text-gray-400">⋮⋮</div>
           <div class="flex-grow-1 flex items-center">
-            <span class="font-medium text-gray-700">${step.menuName}</span>
+            <span class="font-medium text-gray-700">${step.name}</span>
             ${modifiedBadge}
             ${virtualBadge}
           </div>
@@ -553,7 +808,7 @@ const SettingsModule = (function() {
       // Create step dependencies section
       const depTitle = document.createElement('h6');
       depTitle.className = 'text-sm font-medium text-gray-700';
-      depTitle.textContent = `Dependencies for "${step.menuName}"`;
+      depTitle.textContent = `Dependencies for "${step.name}"`;
       vizContainer.appendChild(depTitle);
       
       // This step depends on:
@@ -569,7 +824,7 @@ const SettingsModule = (function() {
             depNode.className = 'dependency-node text-sm';
             depNode.innerHTML = `
               <span class="dependency-arrow text-gray-500">→</span>
-              <span class="font-medium">${depStep.menuName}</span> <span class="text-gray-500">(${depId})</span>
+              <span class="font-medium">${depStep.name}</span> <span class="text-gray-500">(${depId})</span>
             `;
             depList.appendChild(depNode);
           }
@@ -595,7 +850,7 @@ const SettingsModule = (function() {
           depNode.className = 'dependency-node text-sm';
           depNode.innerHTML = `
             <span class="dependency-arrow text-gray-500">←</span>
-            <span class="font-medium">${depStep.menuName}</span> <span class="text-gray-500">(${depStep.id})</span>
+            <span class="font-medium">${depStep.name}</span> <span class="text-gray-500">(${depStep.id})</span>
           `;
           depOn.appendChild(depNode);
         });
@@ -637,7 +892,7 @@ const SettingsModule = (function() {
       }
       
       stepIdField.value = step.id;
-      stepMenuNameField.value = step.menuName;
+      stepMenuNameField.value = step.name;
       stepPromptField.value = step.content.stepPrompt;
       stepInstructionsField.value = step.content.llmInstructions;
       
@@ -725,13 +980,13 @@ const SettingsModule = (function() {
         if (step.id !== state.currentEditingStep) {
           variables.push({
             id: `${step.id}_output`,
-            name: `${step.menuName} (Output)`,
+            name: `${step.name} (Output)`,
             category: 'Step Output'
           });
           
           variables.push({
             id: `${step.id}_summary`,
-            name: `${step.menuName} (Summary)`,
+            name: `${step.name} (Summary)`,
             category: 'Step Summary'
           });
         }
@@ -866,7 +1121,7 @@ const SettingsModule = (function() {
       if (!step) return;
       
       // Set current editing step
-      state.currentEditingStep = stepId;
+      state.currentEditingStep = JSON.parse(JSON.stringify(step)); // Clone step
       state.hasUnsavedChanges = false;
       
       // Show step editor
@@ -897,7 +1152,7 @@ const SettingsModule = (function() {
         // Edit the cloned step
         handleEditStep(clonedStep.id);
         
-        window.NotificationService.success(`Step "${clonedStep.menuName}" created`);
+        window.NotificationService.success(`Step "${clonedStep.name}" created`);
       });
     }
     
@@ -944,7 +1199,7 @@ const SettingsModule = (function() {
     function handleSaveStep() {
       if (!window.StepService || !window.NotificationService) return;
       
-      const stepId = state.currentEditingStep;
+      const stepId = state.currentEditingStep.id;
       if (!stepId) return;
       
       const stepMenuNameField = document.getElementById('stepMenuName');
@@ -981,7 +1236,7 @@ const SettingsModule = (function() {
           
           // If ID changed, update current editing step
           if (stepId !== result.step.id) {
-            state.currentEditingStep = result.step.id;
+            state.currentEditingStep = result.step;
             
             // Update form fields
             stepIdField.value = result.step.id;
@@ -1013,7 +1268,7 @@ const SettingsModule = (function() {
     function handleResetStep() {
       if (!window.StepService || !window.NotificationService) return;
       
-      const stepId = state.currentEditingStep;
+      const stepId = state.currentEditingStep.id;
       if (!stepId) return;
       
       if (!confirm('Are you sure you want to reset this step to its original file content?')) {
@@ -1041,14 +1296,14 @@ const SettingsModule = (function() {
     function handleExportStep() {
       if (!window.NotificationService) return;
       
-      const stepId = state.currentEditingStep;
+      const stepId = state.currentEditingStep.id;
       if (!stepId) return;
       
       const step = state.steps.find(s => s.id === stepId);
       if (!step) return;
       
       // Format step content
-      const content = `[MENU_Name]\n${step.menuName}\n\n[STEP_PROMPT]\n${step.content.stepPrompt}\n\n[LLM_INSTRUCTIONS]\n${step.content.llmInstructions}`;
+      const content = `[MENU_Name]\n${step.name}\n\n[STEP_PROMPT]\n${step.content.stepPrompt}\n\n[LLM_INSTRUCTIONS]\n${step.content.llmInstructions}`;
       
       // Copy to clipboard
       navigator.clipboard.writeText(content)

@@ -1,0 +1,21 @@
+<form id="{{id}}" class="form {{modifier}}" {{#if action}}action="{{action}}"{{/if}} method="{{method}}" {{#if novalidate}}novalidate{{/if}}>
+  {{#if title}}
+  <h2 class="form__title">{{title}}</h2>
+  {{/if}}
+  
+  {{#if description}}
+  <p class="form__description">{{description}}</p>
+  {{/if}}
+  
+  {{{content}}}
+  
+  {{#if submitButton}}
+  <div class="form__actions">
+    <button type="submit" class="button button--primary {{submitButtonModifier}}">{{submitButtonText}}</button>
+    
+    {{#if cancelButton}}
+    <button type="button" class="button button--secondary {{cancelButtonModifier}}">{{cancelButtonText}}</button>
+    {{/if}}
+  </div>
+  {{/if}}
+</form> 

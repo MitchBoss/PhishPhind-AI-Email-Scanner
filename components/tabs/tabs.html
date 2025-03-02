@@ -1,0 +1,42 @@
+<div class="tabs {{#if vertical}}tabs--vertical{{/if}} {{#if equalWidth}}tabs--equal-width{{/if}} {{modifier}}" id="{{id}}">
+  <div class="tabs__nav" role="tablist">
+    {{#each tabs}}
+    <div class="tabs__item {{#if active}}tabs__item--active{{/if}}" 
+         id="tab-{{id}}" 
+         role="tab" 
+         aria-controls="panel-{{id}}" 
+         aria-selected="{{#if active}}true{{else}}false{{/if}}"
+         data-tab-id="{{id}}">
+      {{#if statusIndicator}}
+      <span class="tabs__item-status tabs__item-status--{{statusIndicator}}"></span>
+      {{/if}}
+      {{#if icon}}
+      <span class="tabs__item-icon">{{{icon}}}</span>
+      {{/if}}
+      <span>{{label}}</span>
+      {{#if badge}}
+      <span class="tabs__item-badge">{{badge}}</span>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  <div class="tabs__content">
+    {{#if emptyState}}
+    <div class="tabs__empty" id="{{emptyStateId}}">
+      {{#if emptyStateIcon}}
+      <div class="tabs__empty-icon">{{{emptyStateIcon}}}</div>
+      {{/if}}
+      <p class="tabs__empty-title">{{emptyStateTitle}}</p>
+      <p class="tabs__empty-description">{{emptyStateDescription}}</p>
+    </div>
+    {{/if}}
+    {{#each tabs}}
+    <div class="tabs__panel {{#if active}}tabs__panel--active{{/if}}" 
+         id="panel-{{id}}" 
+         role="tabpanel" 
+         aria-labelledby="tab-{{id}}">
+      {{{content}}}
+    </div>
+    {{/each}}
+  </div>
+</div> 

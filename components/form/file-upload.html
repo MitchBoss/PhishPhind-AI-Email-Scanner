@@ -1,0 +1,34 @@
+<div class="form-group {{groupModifier}}">
+  {{#if label}}
+  <label for="{{id}}" class="form-label {{#if required}}form-label--required{{/if}}">{{label}}</label>
+  {{/if}}
+  
+  <div class="file-upload {{modifier}}">
+    <input 
+      type="file" 
+      class="file-upload__input" 
+      id="{{id}}" 
+      name="{{name}}"
+      {{#if accept}}accept="{{accept}}"{{/if}}
+      {{#if multiple}}multiple{{/if}}
+      {{#if required}}required{{/if}}
+      {{#if disabled}}disabled{{/if}}
+    >
+    <label for="{{id}}" class="file-upload__label">
+      <span class="file-upload__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+      </span>
+      {{buttonText}}
+    </label>
+  </div>
+  
+  {{#if helpText}}
+  <div class="form-help">{{helpText}}</div>
+  {{/if}}
+  
+  {{#if errorMessage}}
+  <div class="form-error">{{errorMessage}}</div>
+  {{/if}}
+</div> 

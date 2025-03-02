@@ -46,10 +46,38 @@ const AnalysisModule = (function() {
       const html = await response.text();
       container.innerHTML = html;
       
-      // Set up event handlers
-      const savePdfBtn = document.getElementById('savePdfBtn');
-      if (savePdfBtn) {
-        savePdfBtn.addEventListener('click', exportAnalysisAsPdf);
+      // Create UI components using ComponentLoader if available
+      if (window.ComponentLoader) {
+        // Create the Export PDF button
+        const exportContainer = document.getElementById('exportContainer');
+        if (exportContainer) {
+          const exportPdfButton = await window.ComponentLoader.createButton({
+            id: 'savePdfBtn',
+            text: 'Export Analysis as PDF',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>',
+            onClick: exportAnalysisAsPdf
+          });
+          exportContainer.appendChild(exportPdfButton);
+        }
+        
+        // Create the Analysis History card
+        const historyContainer = document.getElementById('analysisHistoryContainer');
+        if (historyContainer) {
+          const historyCard = await window.ComponentLoader.createCard({
+            id: 'analysisHistoryCard',
+            title: 'Analysis History',
+            content: '<div id="analysisHistory"><p class="text-gray-500">No previous analyses.</p></div>'
+          });
+          historyContainer.appendChild(historyCard);
+        }
+      } else {
+        console.warn('ComponentLoader not available, falling back to direct DOM manipulation');
+        
+        // Set up event handlers for the Export PDF button (legacy approach)
+        const savePdfBtn = document.getElementById('savePdfBtn');
+        if (savePdfBtn) {
+          savePdfBtn.addEventListener('click', exportAnalysisAsPdf);
+        }
       }
       
       // Render history
@@ -425,6 +453,123 @@ const AnalysisModule = (function() {
       return; // The module might not be mounted yet
     }
     
+    // Check if tabs component already exists
+    const existingTabs = document.getElementById('analysis-tabs');
+    if (existingTabs) {
+      // Update existing tab content
+      const existingTabPanel = document.getElementById(`panel-${result.stepId}`);
+      if (existingTabPanel) {
+        const mdOutput = marked.parse(result.output || "");
+        const sanitizedOutput = DOMPurify.sanitize(mdOutput);
+        const mdSummary = marked.parse(result.summary || "");
+        const sanitizedSummary = DOMPurify.sanitize(mdSummary);
+        
+        existingTabPanel.querySelector('.result-summary').innerHTML = sanitizedSummary;
+        existingTabPanel.querySelector('.result-content').innerHTML = sanitizedOutput;
+        return;
+      }
+      
+      // Add new tab to existing tabs component
+      // This would require a more complex implementation to dynamically add tabs
+      // For simplicity, we'll recreate the entire tabs component
+      existingTabs.remove();
+    }
+    
+    // Collect all results to create tabs
+    const allResults = [];
+    
+    // Add current result
+    const mdOutput = marked.parse(result.output || "");
+    const sanitizedOutput = DOMPurify.sanitize(mdOutput);
+    const mdSummary = marked.parse(result.summary || "");
+    const sanitizedSummary = DOMPurify.sanitize(mdSummary);
+    
+    const tabContent = `
+      <h3 class="text-xl font-semibold text-gray-800 mb-3">${DOMPurify.sanitize(result.menuName)}</h3>
+      <div class="mb-4 bg-gray-50 p-4 rounded-md border border-gray-200 result-summary">
+        <h4 class="text-base font-medium text-gray-700 mb-2">Summary</h4>
+        ${sanitizedSummary}
+      </div>
+      <div class="prose max-w-none result-content">
+        ${sanitizedOutput}
+      </div>
+    `;
+    
+    allResults.push({
+      id: result.stepId,
+      label: result.menuName,
+      content: tabContent,
+      active: result.stepNumber === 1, // First tab is active by default
+      statusIndicator: result.stepNumber < state.currentStep ? 'success' : 
+                      result.stepNumber === state.currentStep ? 'info' : null
+    });
+    
+    // Add other existing results if available
+    const existingPanels = resultContent.querySelectorAll('.tab-pane');
+    existingPanels.forEach(panel => {
+      if (panel.id !== tabId) {
+        const panelId = panel.id.replace('content-', '');
+        const tabElement = resultTabs.querySelector(`[href="#${panel.id}"]`);
+        const tabLabel = tabElement ? tabElement.textContent.trim() : 'Tab';
+        const isActive = tabElement && tabElement.classList.contains('border-brand-purple');
+        const isComplete = tabElement && tabElement.querySelector('.text-green-500');
+        
+        allResults.push({
+          id: panelId,
+          label: tabLabel,
+          content: panel.innerHTML,
+          active: isActive,
+          statusIndicator: isComplete ? 'success' : null
+        });
+      }
+    });
+    
+    // Create tabs component if ComponentLoader is available
+    if (window.ComponentLoader) {
+      // Clear existing content
+      resultTabs.innerHTML = '';
+      resultContent.innerHTML = '';
+      
+      // Create tabs component
+      window.ComponentLoader.createTabs({
+        id: 'analysis-tabs',
+        tabs: allResults,
+        emptyState: allResults.length === 0,
+        emptyStateIcon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>',
+        emptyStateTitle: 'No analysis results yet',
+        emptyStateDescription: 'Add email content and click "Start Analysis" to begin'
+      }).then(tabsComponent => {
+        // Replace the existing tabs and content with the new component
+        resultContent.appendChild(tabsComponent);
+      }).catch(error => {
+        console.error('Error creating tabs component:', error);
+        // Fall back to legacy implementation
+        displayResultLegacy(result);
+      });
+    } else {
+      // Fall back to legacy implementation
+      displayResultLegacy(result);
+    }
+  }
+  
+  /**
+   * Legacy implementation of displayResult for backward compatibility
+   */
+  function displayResultLegacy(result) {
+    // Hide empty message
+    const emptyResultsMessage = document.getElementById('emptyResultsMessage');
+    if (emptyResultsMessage) {
+      emptyResultsMessage.classList.add('hidden');
+    }
+    
+    const tabId = `content-${result.stepId}`;
+    const resultTabs = document.getElementById('resultTabs');
+    const resultContent = document.getElementById('resultTabsContent');
+    
+    if (!resultTabs || !resultContent) {
+      return; // The module might not be mounted yet
+    }
+    
     // Check if tab already exists
     if (document.getElementById(`tab-${result.stepId}`)) {
       // Update existing tab content
@@ -543,37 +688,54 @@ const AnalysisModule = (function() {
    * Render analysis history in the UI.
    */
   function renderHistory() {
-    if (!window.HistoryService) return;
+    const historyContainer = document.getElementById('analysisHistory');
+    if (!historyContainer) return;
     
-    const history = window.HistoryService.getAnalysisHistory();
-    const container = document.getElementById('analysisHistory');
-    
-    if (!container) return;
-    
-    container.innerHTML = '';
+    // Get history from persistence service
+    const history = window.PersistenceManager ? window.PersistenceManager.getHistory() : [];
     
     if (history.length === 0) {
-      container.innerHTML = "<p class='text-gray-500'>No previous analyses.</p>";
+      historyContainer.innerHTML = '<p class="text-gray-500">No previous analyses.</p>';
       return;
     }
     
+    // Create history items
+    let historyHTML = '<div class="space-y-3">';
+    
     history.forEach((item, index) => {
-      const date = new Date(item.timestamp).toLocaleString();
-      const shortMsg = item.message.substring(0, 80).replace(/\n/g, " ");
-      const div = document.createElement('div');
-      div.className = 'border border-gray-200 rounded-md shadow-sm p-3 mb-3 history-item cursor-pointer hover:bg-gray-50 transition-all duration-200';
-      div.dataset.index = index;
+      const timestamp = new Date(item.timestamp).toLocaleString();
+      const subject = item.analysis && item.analysis.data_extraction ? 
+        item.analysis.data_extraction.subject || 'No subject' : 'No subject';
       
-      div.innerHTML = `
-        <div class="font-medium text-gray-800">${date}</div>
-        <div class="text-gray-600 text-sm">${shortMsg}${shortMsg.length >= 80 ? '...' : ''}</div>
-      `;
-      
-      div.addEventListener('click', () => {
+      if (window.ComponentLoader) {
+        // Use ComponentLoader to create a mini card for each history item (will be added in the next update)
+        historyHTML += `
+          <div class="history-item p-3 bg-gray-50 rounded-md hover:bg-gray-100 cursor-pointer" data-index="${index}">
+            <p class="font-medium">${subject}</p>
+            <p class="text-sm text-gray-600">${timestamp}</p>
+          </div>
+        `;
+      } else {
+        // Legacy approach
+        historyHTML += `
+          <div class="history-item p-3 bg-gray-50 rounded-md hover:bg-gray-100 cursor-pointer" data-index="${index}">
+            <p class="font-medium">${subject}</p>
+            <p class="text-sm text-gray-600">${timestamp}</p>
+          </div>
+        `;
+      }
+    });
+    
+    historyHTML += '</div>';
+    historyContainer.innerHTML = historyHTML;
+    
+    // Add event listeners to history items
+    const historyItems = historyContainer.querySelectorAll('.history-item');
+    historyItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const index = parseInt(item.dataset.index, 10);
         loadHistoryItem(index);
       });
-      
-      container.appendChild(div);
     });
   }
   

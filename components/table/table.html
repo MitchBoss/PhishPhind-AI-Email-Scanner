@@ -1,0 +1,111 @@
+<div class="{{#if responsive}}table--responsive{{/if}} {{#if striped}}table--striped{{/if}} {{#if bordered}}table--bordered{{/if}} {{#if compact}}table--compact{{/if}} {{modifier}}" id="{{id}}">
+  {{#if title}}
+  <div class="mb-3 flex justify-between items-center">
+    <h3 class="text-lg font-medium">{{title}}</h3>
+    {{#if headerActions}}
+    <div class="flex space-x-2">
+      {{{headerActions}}}
+    </div>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{#if emptyState}}
+  <div class="table__empty" id="{{emptyStateId}}">
+    {{#if emptyStateIcon}}
+    <div class="table__empty-icon">{{{emptyStateIcon}}}</div>
+    {{/if}}
+    <p class="table__empty-title">{{emptyStateTitle}}</p>
+    <p class="table__empty-description">{{emptyStateDescription}}</p>
+  </div>
+  {{else}}
+  <table class="table">
+    <thead class="table__header">
+      <tr>
+        {{#if selectable}}
+        <th class="table__header-cell table__checkbox">
+          <input type="checkbox" id="{{id}}-select-all" class="table__select-all">
+        </th>
+        {{/if}}
+        {{#each columns}}
+        <th class="table__header-cell {{#if sortable}}table__header-cell--sortable{{/if}} {{#if sorted}}table__header-cell--sorted-{{sorted}}{{/if}} {{#if width}}table__header-cell--custom-width{{/if}}" 
+            data-column="{{key}}">
+          <span>{{label}}</span>
+          {{#if sortable}}
+          <span class="table__sort-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+            </svg>
+          </span>
+          {{/if}}
+        </th>
+        {{/each}}
+        {{#if rowActions}}
+        <th class="table__header-cell table__header-cell--actions">Actions</th>
+        {{/if}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows}}
+      <tr class="table__row {{#if selected}}table__row--selected{{/if}}" data-row-id="{{id}}">
+        {{#if ../selectable}}
+        <td class="table__body-cell table__checkbox">
+          <input type="checkbox" class="table__select-row" {{#if selected}}checked{{/if}} data-row-id="{{id}}">
+        </td>
+        {{/if}}
+        {{#each ../columns}}
+        <td class="table__body-cell" data-label="{{label}}">
+          {{lookup ../this key}}
+        </td>
+        {{/each}}
+        {{#if ../rowActions}}
+        <td class="table__body-cell table__body-cell--actions">
+          <div class="table__actions">
+            {{#each ../rowActions}}
+            <button type="button" 
+                    class="table__action-btn table__action-btn--{{type}}" 
+                    data-action="{{action}}" 
+                    data-row-id="{{../id}}" 
+                    aria-label="{{label}}"
+                    {{#if disabled}}disabled{{/if}}
+                    {{#if title}}title="{{title}}"{{/if}}>
+              {{{icon}}}
+            </button>
+            {{/each}}
+          </div>
+        </td>
+        {{/if}}
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  {{#if pagination}}
+  <div class="table__pagination">
+    <div class="table__pagination-info">
+      Showing {{pagination.startItem}} to {{pagination.endItem}} of {{pagination.totalItems}} entries
+    </div>
+    <div class="table__pagination-controls">
+      <button class="table__pagination-button" 
+              {{#unless pagination.hasPrevious}}disabled{{/unless}} 
+              data-page="previous">
+        Previous
+      </button>
+      
+      {{#each pagination.pages}}
+      <button class="table__pagination-button {{#if active}}table__pagination-button--active{{/if}}" 
+              data-page="{{value}}">
+        {{label}}
+      </button>
+      {{/each}}
+      
+      <button class="table__pagination-button" 
+              {{#unless pagination.hasNext}}disabled{{/unless}} 
+              data-page="next">
+        Next
+      </button>
+    </div>
+  </div>
+  {{/if}}
+  {{/if}}
+</div> 

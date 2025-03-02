@@ -62,6 +62,116 @@ The application relies on the following configuration files:
 
 These files can be customized via the settings modal within the application.
 
+## Component System
+
+PhishPhind is built using a modular component-based architecture, making it highly maintainable and extensible. The component system includes:
+
+### Core Components
+
+- **Card** - Flexible content containers with header, body, and footer sections
+- **Modal** - Dialog windows for displaying content or collecting user input
+- **Button** - Interactive elements with various styles and states
+- **Form Elements** - Text inputs, checkboxes, radio buttons, selects, etc.
+- **Tabs** - Tabbed interface for organizing and switching between content sections
+- **Table** - Data tables with sortable columns and row actions
+- **Navigation** - Navbar and sidebar components for application navigation
+
+### Component Architecture
+
+The component system follows these design principles:
+
+1. **BEM Methodology** - Block Element Modifier approach for CSS class naming
+2. **Modular CSS** - Component-specific CSS files loaded only when needed
+3. **Template-based Rendering** - HTML templates with conditional content
+4. **Factory Functions** - JavaScript functions that create and configure components
+5. **Event System** - Custom events for component interaction and state changes
+
+### Using Components
+
+Components can be easily created using the `ComponentLoader` API:
+
+```javascript
+// Create a card component
+const card = await ComponentLoader.createCard({
+  title: 'Card Title',
+  content: '<p>Card content goes here</p>',
+  variant: 'bordered'
+});
+
+// Create a modal
+await ComponentLoader.showModal({
+  title: 'Modal Title',
+  content: '<p>Modal content</p>',
+  buttons: [
+    { text: 'Close', action: 'close', variant: 'primary' }
+  ]
+});
+
+// Create a navbar
+const navbar = await ComponentLoader.createNavbar({
+  brand: { title: 'PhishPhind', url: '#' },
+  items: [
+    { text: 'Dashboard', url: '#dashboard', active: true },
+    { text: 'Analysis', url: '#analysis' }
+  ]
+});
+```
+
+For more details on using the component system, refer to the documentation in the `docs` folder.
+
+## Project Structure
+
+The application is organized as follows:
+
+```
+PhishPhind-AI-Email-Scanner/
+│
+├── css/                    # CSS styles
+│   ├── base.css            # Base styles
+│   ├── layout.css          # Layout styles
+│   ├── main.css            # Main stylesheet
+│   ├── variables.css       # CSS variables
+│   └── components/         # Component-specific styles
+│       ├── button.css      # Button styles
+│       ├── card.css        # Card styles
+│       ├── modal.css       # Modal styles
+│       ├── form.css        # Form elements styles
+│       ├── tabs.css        # Tabs styles
+│       ├── table.css       # Table styles
+│       └── navigation.css  # Navigation styles
+│
+├── js/                     # JavaScript files
+│   ├── main.js             # Main application logic
+│   ├── componentLoader.js  # Component system
+│   ├── util.js             # Utility functions
+│   └── services/           # Service modules
+│
+├── components/             # HTML templates for components
+│   ├── card.html           # Card component template
+│   ├── modal.html          # Modal component template
+│   ├── form/               # Form element templates
+│   ├── tabs/               # Tabs component templates
+│   ├── table/              # Table component templates
+│   └── navigation/         # Navigation component templates
+│
+├── modules/                # Application modules
+│   ├── analysis/           # Analysis module
+│   ├── history/            # History module
+│   ├── settings/           # Settings module
+│   └── about/              # About module
+│
+├── config/                 # Configuration files
+│   ├── models.json         # LLM models configuration
+│   └── steps.json          # Analysis steps configuration
+│
+├── docs/                   # Documentation
+│   ├── component-usage-examples.md  # Component examples
+│   ├── integration-guide.md         # Integration guide
+│   └── ModularizationPlan.md        # Project plan
+│
+└── index.html              # Main HTML file
+```
+
 ## License
 
 This code is provided as-is, with no guarantees or restrictions. Use it however you like with no restriction.

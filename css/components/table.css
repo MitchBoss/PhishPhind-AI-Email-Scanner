@@ -1,0 +1,285 @@
+/* 
+ * table.css - Table Component Styles
+ *
+ * This file contains styles for the Table component, including:
+ * - Basic table styling
+ * - Responsive tables
+ * - Sortable columns
+ * - Row actions
+ * - Row selection
+ * - Pagination
+ * - Empty state
+ */
+
+/* Base Table Styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  margin-bottom: 1rem;
+}
+
+.table__header {
+  background-color: var(--color-bg-subtle);
+}
+
+.table__header-cell {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-dark);
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* Custom column width - This is set via JS */
+.table__header-cell--custom-width {
+  /* Width is set via JS in createTable function */
+}
+
+/* Actions column */
+.table__header-cell--actions {
+  width: 80px; /* Default width for actions column */
+}
+
+.table__body-cell {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border-light);
+  vertical-align: middle;
+}
+
+.table__row:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* Responsive Table */
+.table--responsive {
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .table--responsive table {
+    display: block;
+  }
+  
+  .table--responsive thead {
+    display: none;
+  }
+  
+  .table--responsive tbody {
+    display: block;
+  }
+  
+  .table--responsive .table__row {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem;
+  }
+  
+  .table--responsive .table__body-cell {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-bottom: none;
+  }
+  
+  .table--responsive .table__body-cell:before {
+    content: attr(data-label);
+    font-weight: var(--font-weight-medium);
+    margin-right: 1rem;
+  }
+  
+  .table--responsive .table__body-cell--actions {
+    justify-content: flex-end;
+  }
+}
+
+/* Sortable Columns */
+.table__header-cell--sortable {
+  cursor: pointer;
+  position: relative;
+}
+
+.table__header-cell--sortable:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.table__sort-icon {
+  display: inline-block;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
+}
+
+.table__header-cell--sorted-asc .table__sort-icon {
+  transform: rotate(180deg);
+}
+
+.table__header-cell--sorted-asc,
+.table__header-cell--sorted-desc {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Row Actions */
+.table__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.table__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.table__action-btn:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.table__action-btn--view {
+  color: var(--color-info);
+}
+
+.table__action-btn--edit {
+  color: var(--color-warning);
+}
+
+.table__action-btn--delete {
+  color: var(--color-danger);
+}
+
+.table__action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Row Selection */
+.table__checkbox {
+  width: 40px;
+  text-align: center;
+}
+
+.table__row--selected {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+}
+
+.table__row--selected:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.15);
+}
+
+/* Pagination */
+.table__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.table__pagination-info {
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+}
+
+.table__pagination-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.table__pagination-button {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.table__pagination-button:hover:not(:disabled) {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-dark);
+}
+
+.table__pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.table__pagination-button--active {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+}
+
+.table__pagination-button--active:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+/* Empty State */
+.table__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+}
+
+.table__empty-icon {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  color: var(--color-text-light);
+}
+
+.table__empty-title {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 0.5rem;
+  color: var(--color-text-dark);
+}
+
+.table__empty-description {
+  color: var(--color-text-light);
+  max-width: 24rem;
+  margin: 0 auto;
+}
+
+/* Variants */
+.table--striped tbody tr:nth-child(odd) {
+  background-color: var(--color-bg-subtle);
+}
+
+.table--striped tbody tr:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.table--bordered {
+  border: 1px solid var(--color-border);
+}
+
+.table--bordered .table__header-cell,
+.table--bordered .table__body-cell {
+  border: 1px solid var(--color-border);
+}
+
+.table--compact .table__header-cell,
+.table--compact .table__body-cell {
+  padding: 0.5rem;
+} 
