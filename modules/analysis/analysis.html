@@ -1,40 +1,36 @@
 <div class="analysis-module">
-    <!-- Results Tabs -->
-    <div class="mb-6">
-      <div class="border-b border-gray-200">
-        <nav class="-mb-px flex space-x-8" id="resultTabs" role="tablist">
-          <!-- Tab items will be dynamically added here -->
-        </nav>
-      </div>
-      <div class="bg-white rounded-lg p-6" id="resultTabsContent">
-        <!-- Tab content will be dynamically added here -->
-        <div class="text-center py-8 text-gray-500" id="emptyResultsMessage">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <p class="text-lg">No analysis results yet</p>
-          <p class="text-sm mt-1">Add email content and click "Start Analysis" to begin</p>
-        </div>
-      </div>
+  <!-- Results Tabs -->
+  <div class="mb-6">
+    <div class="border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8" id="resultTabs" role="tablist">
+        <!-- Tab items will be dynamically added here -->
+      </nav>
     </div>
-  
-    <!-- Export PDF Button -->
-    <div class="mb-8 hidden" id="exportContainer">
-      <button id="savePdfBtn" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-        Export Analysis as PDF
-      </button>
-    </div>
-  
-    <!-- Analysis History -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300">
-      <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
-        <h2 class="text-lg font-medium text-gray-900">Analysis History</h2>
-      </div>
-      <div class="p-4" id="analysisHistory">
-        <p class="text-gray-500">No previous analyses.</p>
+    <div class="bg-white rounded-lg p-6" id="resultTabsContent">
+      <!-- Tab content will be dynamically added here -->
+      <div class="text-center py-8 text-gray-500" id="emptyResultsMessage">
+        <span class="icon icon-document icon-xl mx-auto block mb-3 text-gray-400"></span>
+        <p class="text-lg">No analysis results yet</p>
+        <p class="text-sm mt-1">Add email content and click "Start Analysis" to begin</p>
       </div>
     </div>
   </div>
+
+  <!-- Export PDF Button -->
+  <div class="mb-8 hidden" id="exportContainer">
+    <button id="savePdfBtn" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+      <span class="icon icon-download icon-md mr-2"></span>
+      Export Analysis as PDF
+    </button>
+  </div>
+
+  <!-- Analysis History -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300">
+    <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
+      <h2 class="text-lg font-medium text-gray-900">Analysis History</h2>
+    </div>
+    <div class="p-4" id="analysisHistory">
+      <p class="text-gray-500">No previous analyses.</p>
+    </div>
+  </div>
+</div>

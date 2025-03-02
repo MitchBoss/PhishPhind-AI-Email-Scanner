@@ -28,8 +28,11 @@
   </script>
   <!-- Core CSS -->
   <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/icons.css" />
+  <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/utilities.css" />
   <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/modals.css" />
   
   <!-- Third-party Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -100,16 +103,11 @@
         </div>
         <div class="flex items-center">
           <button id="aboutBtn" data-module="about" class="mr-2 inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <span class="icon icon-info icon-md mr-1"></span>
             About
           </button>
           <button id="settingsBtn" data-module="settings" class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
+            <span class="icon icon-settings icon-md mr-1"></span>
             Settings
           </button>
         </div>
@@ -131,9 +129,7 @@
       <div class="w-full border-2 border-gray-300 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-brand-purple transition-colors duration-200" id="dropzone">
         <input type="file" class="hidden" id="messageFile" />
         <div class="flex flex-col items-center justify-center">
-          <svg class="h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
+          <span class="icon icon-upload icon-xl text-gray-400"></span>
           <p class="mt-2 text-sm font-medium text-gray-900">Click to upload or drag and drop</p>
           <p class="mt-1 text-xs text-gray-500">This will load the file content into the text box</p>
         </div>
@@ -147,9 +143,7 @@
 
     <div class="mb-6">
       <button id="startAnalysisBtn" class="inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
+        <span class="icon icon-search icon-md mr-2"></span>
         Start Analysis
       </button>
     </div>
@@ -157,10 +151,7 @@
     <!-- Spinner & Progress -->
     <div id="spinner-container" class="text-center mb-6 hidden">
       <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-brand-purple">
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
+        <span class="icon icon-spinner icon-md mr-3 text-white"></span>
         <span id="spinner-message">Processing...</span>
       </div>
     </div>
@@ -281,6 +272,7 @@
                     </select>
                   </div>
                   <button id="saveApiSettingsBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+                    <span class="icon icon-check icon-sm mr-2"></span>
                     Save Settings
                   </button>
                 </div>
@@ -303,6 +295,7 @@
             </div>
             <div class="mt-6 text-center">
               <button class="close-modal-btn inline-flex items-center px-6 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
+                <span class="icon icon-close icon-sm mr-2"></span>
                 Close
               </button>
             </div>

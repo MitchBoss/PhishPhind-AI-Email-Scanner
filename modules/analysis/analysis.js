@@ -452,13 +452,12 @@ const AnalysisModule = (function() {
     if (result.stepNumber < state.currentStep) {
       // This is a completed step
       const completionMark = document.createElement('span');
-      completionMark.className = 'text-green-500 mr-2';
-      completionMark.textContent = '✓';
+      completionMark.className = 'icon icon-check icon-sm text-green-500 mr-2';
       tabLink.appendChild(completionMark);
     } else if (result.stepNumber === state.currentStep) {
       // This is the current in-progress step
       const spinner = document.createElement('span');
-      spinner.className = 'tab-spinner';
+      spinner.className = 'icon icon-spinner icon-sm mr-2';
       tabLink.appendChild(spinner);
     }
     
@@ -526,13 +525,12 @@ const AnalysisModule = (function() {
     
     // Convert previous step spinners to checkmarks
     if (result.stepNumber > 1) {
-      resultTabs.querySelectorAll('.tab-spinner').forEach(spinner => {
+      resultTabs.querySelectorAll('.icon-spinner').forEach(spinner => {
         const tabElement = spinner.parentElement;
         if (tabElement && tabElement !== tabLink) {
           // Replace spinner with checkmark
           const checkmark = document.createElement('span');
-          checkmark.className = 'text-green-500 mr-2';
-          checkmark.textContent = '✓';
+          checkmark.className = 'icon icon-check icon-sm text-green-500 mr-2';
           spinner.parentNode.replaceChild(checkmark, spinner);
         }
       });
@@ -691,11 +689,10 @@ const AnalysisModule = (function() {
       progressBar.classList.add('complete');
       
       // Update all tab indicators when complete
-      document.querySelectorAll('.tab-spinner').forEach(spinner => {
+      document.querySelectorAll('.icon-spinner').forEach(spinner => {
         // Create checkmark to replace spinner
         const checkmark = document.createElement('span');
-        checkmark.className = 'text-green-500 mr-2';
-        checkmark.textContent = '✓';
+        checkmark.className = 'icon icon-check icon-sm text-green-500 mr-2';
         
         // Replace spinner with checkmark
         spinner.parentNode.replaceChild(checkmark, spinner);
