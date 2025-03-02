@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Background Shield -->
+  <path d="M64 8 L16 28 V60 C16 88 36 112 64 120 C92 112 112 88 112 60 V28 Z" fill="#5D4CBF"/>
+  <path d="M64 14 L24 32 V60 C24 84 41 104 64 112 C87 104 104 84 104 60 V32 Z" fill="#6E5DD0"/>
+
+  <!-- Envelope with Shadow -->
+  <rect x="34" y="44" width="60" height="40" rx="5" ry="5" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5"/>
+  <path d="M34 48 L64 68 L94 48" fill="none" stroke="#6E5DD0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M34 84 L54 64" fill="none" stroke="#6E5DD0" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M94 84 L74 64" fill="none" stroke="#6E5DD0" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Green Checkmark with Drop Shadow -->
+  <circle cx="100" cy="28" r="15" fill="#4CAF50" stroke="#388E3C" stroke-width="1.5"/>
+  <path d="M93 28 L98 33 L107 23" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Subtle Drop Shadow -->
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feOffset result="offOut" in="SourceAlpha" dx="0" dy="2"/>
+      <feGaussianBlur result="blurOut" in="offOut" stdDeviation="2"/>
+      <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <rect x="34" y="44" width="60" height="40" rx="5" ry="5" fill="none"/>
+    <circle cx="100" cy="28" r="15" fill="none"/>
+  </g>
+</svg>
