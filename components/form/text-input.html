@@ -1,0 +1,31 @@
+<div class="form-group {{groupModifier}}">
+  {{#if label}}
+  <label for="{{id}}" class="form-label {{#if required}}form-label--required{{/if}}">{{label}}</label>
+  {{/if}}
+  
+  <div class="input {{modifier}}">
+    <input 
+      type="{{type}}" 
+      class="input__field" 
+      id="{{id}}" 
+      name="{{name}}" 
+      value="{{value}}" 
+      placeholder="{{placeholder}}"
+      {{#if required}}required{{/if}}
+      {{#if readonly}}readonly{{/if}}
+      {{#if disabled}}disabled{{/if}}
+      {{#if min}}min="{{min}}"{{/if}}
+      {{#if max}}max="{{max}}"{{/if}}
+      {{#if pattern}}pattern="{{pattern}}"{{/if}}
+      {{#if autocomplete}}autocomplete="{{autocomplete}}"{{/if}}
+    >
+  </div>
+  
+  {{#if helpText}}
+  <div class="form-help">{{helpText}}</div>
+  {{/if}}
+  
+  {{#if errorMessage}}
+  <div class="form-error">{{errorMessage}}</div>
+  {{/if}}
+</div> 

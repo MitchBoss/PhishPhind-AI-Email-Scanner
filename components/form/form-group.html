@@ -1,0 +1,21 @@
+<div class="form-group {{modifier}}">
+  {{#if heading}}
+  <h3 class="form-group__heading">{{heading}}</h3>
+  {{/if}}
+  
+  {{#if description}}
+  <p class="form-group__description">{{description}}</p>
+  {{/if}}
+  
+  <div class="form-group__content">
+    {{{content}}}
+  </div>
+  
+  {{#if helpText}}
+  <div class="form-help">{{helpText}}</div>
+  {{/if}}
+  
+  {{#if errorMessage}}
+  <div class="form-error">{{errorMessage}}</div>
+  {{/if}}
+</div> 

@@ -1,0 +1,140 @@
+/* 
+ * variables.css - CSS custom properties for theming
+ * This file contains all design tokens used across the application
+ */
+
+:root {
+  /* Colors - Primary */
+  --color-primary: #6E5DD0;       /* Custom PhishPhind Purple */
+  --color-primary-light: #7F6FDC; /* Lighter PhishPhind Purple */
+  --color-primary-dark: #5D4CBF;  /* Darker PhishPhind Purple */
+  
+  /* Colors - Secondary */
+  --color-secondary: #2563eb;     /* Blue-600 */
+  --color-secondary-light: #3b82f6; /* Blue-500 */
+  --color-secondary-dark: #1d4ed8; /* Blue-700 */
+  
+  /* Colors - Status */
+  --color-success: #10b981;       /* Green-500 */
+  --color-success-light: #34d399; /* Green-400 */
+  --color-success-dark: #059669;  /* Green-600 */
+  
+  --color-warning: #f59e0b;       /* Amber-500 */
+  --color-warning-light: #fbbf24; /* Amber-400 */
+  --color-warning-dark: #d97706;  /* Amber-600 */
+  
+  --color-danger: #ef4444;        /* Red-500 */
+  --color-danger-light: #f87171;  /* Red-400 */
+  --color-danger-dark: #dc2626;   /* Red-600 */
+  
+  --color-info: #0ea5e9;          /* Sky-500 */
+  --color-info-light: #38bdf8;    /* Sky-400 */
+  --color-info-dark: #0284c7;     /* Sky-600 */
+  
+  /* Colors - Grayscale */
+  --color-white: #ffffff;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-black: #000000;
+  
+  /* Text Colors */
+  --color-text: var(--color-gray-800);
+  --color-text-light: var(--color-gray-600);
+  --color-text-lighter: var(--color-gray-500);
+  --color-text-inverted: var(--color-white);
+  
+  /* Border Colors */
+  --color-border: var(--color-gray-200);
+  --color-border-light: var(--color-gray-100);
+  --color-border-dark: var(--color-gray-300);
+  
+  /* Background Colors */
+  --color-bg: var(--color-white);
+  --color-bg-subtle: var(--color-gray-50);
+  --color-bg-muted: var(--color-gray-100);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Spacing */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+  --space-20: 5rem;    /* 80px */
+  --space-24: 6rem;    /* 96px */
+  
+  /* Typography */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  --font-size-xs: 0.75rem;   /* 12px */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --font-size-base: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-2xl: 1.5rem;   /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem;  /* 36px */
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line Heights */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  
+  /* Border Radius */
+  --radius-sm: 0.125rem;  /* 2px */
+  --radius: 0.25rem;      /* 4px */
+  --radius-md: 0.375rem;  /* 6px */
+  --radius-lg: 0.5rem;    /* 8px */
+  --radius-xl: 0.75rem;   /* 12px */
+  --radius-2xl: 1rem;     /* 16px */
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 150ms;
+  --transition-normal: 250ms;
+  --transition-slow: 350ms;
+  
+  /* Z-index */
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-auto: auto;
+  
+  /* Modal specific */
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  
+  /* Notification specific */
+  --z-notification: 60;
+} 

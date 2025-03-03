@@ -1,0 +1,33 @@
+<div class="form-group {{groupModifier}}">
+  {{#if groupLabel}}
+  <div class="form-label {{#if required}}form-label--required{{/if}}">{{groupLabel}}</div>
+  {{/if}}
+  
+  {{#if options}}
+  <div class="radio-group">
+    {{#each options}}
+    <label class="radio {{../modifier}}">
+      <input 
+        type="radio" 
+        class="radio__input" 
+        id="{{../id}}-{{@index}}" 
+        name="{{../name}}" 
+        value="{{this.value}}"
+        {{#if this.checked}}checked{{/if}}
+        {{#if ../required}}required{{/if}}
+        {{#if this.disabled}}disabled{{/if}}
+      >
+      <span class="radio__label">{{this.label}}</span>
+    </label>
+    {{/each}}
+  </div>
+  {{/if}}
+  
+  {{#if helpText}}
+  <div class="form-help">{{helpText}}</div>
+  {{/if}}
+  
+  {{#if errorMessage}}
+  <div class="form-error">{{errorMessage}}</div>
+  {{/if}}
+</div> 

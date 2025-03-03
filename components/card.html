@@ -1,0 +1,60 @@
+<div class="card {{modifier}}" id="{{id}}">
+  {{#if image}}
+  {{#if imagePosition}}
+  {{#if imagePosition == 'top'}}
+  <img src="{{image}}" alt="{{imageAlt}}" class="card__image card__image--top">
+  {{/if}}
+  {{else}}
+  <img src="{{image}}" alt="{{imageAlt}}" class="card__image card__image--top">
+  {{/if}}
+  {{/if}}
+  
+  {{#if header}}
+  <div class="card__header">
+    {{#if title}}
+    <h3 class="card__title">{{title}}</h3>
+    {{/if}}
+    {{#if subtitle}}
+    <div class="card__subtitle">{{subtitle}}</div>
+    {{/if}}
+    {{#if headerContent}}
+    <div class="card__header-content">{{{headerContent}}}</div>
+    {{/if}}
+  </div>
+  {{/if}}
+  
+  <div class="card__body">
+    {{#if content}}
+    {{{content}}}
+    {{/if}}
+  </div>
+  
+  {{#if footer}}
+  <div class="card__footer">
+    {{#if footerContent}}
+    {{{footerContent}}}
+    {{/if}}
+  </div>
+  {{/if}}
+  
+  {{#if image}}
+  {{#if imagePosition}}
+  {{#if imagePosition == 'bottom'}}
+  <img src="{{image}}" alt="{{imageAlt}}" class="card__image card__image--bottom">
+  {{/if}}
+  {{/if}}
+  {{/if}}
+  
+  {{#if clickable}}
+  <script>
+    document.getElementById('{{id}}').addEventListener('click', function(event) {
+      // Prevent click if target is a button or link
+      if (event.target.tagName === 'BUTTON' || event.target.tagName === 'A' ||
+          event.target.closest('button') || event.target.closest('a')) {
+        return;
+      }
+      {{clickHandler}}
+    });
+  </script>
+  {{/if}}
+</div> 

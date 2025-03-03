@@ -1,0 +1,60 @@
+<div id="{{id}}" class="navbar {{#if fixed}}navbar--fixed{{/if}} {{#if variant}}navbar--{{variant}}{{/if}} {{#if compact}}navbar--compact{{/if}} {{#if expanded}}navbar--expanded{{/if}} {{modifier}}">
+  {{#if toggleButton}}
+  <button class="navbar__toggle {{#if toggleActive}}navbar__toggle--active{{/if}}" aria-label="Toggle Navigation" data-navbar-toggle>
+    <span class="navbar__toggle-icon"></span>
+  </button>
+  {{/if}}
+  
+  {{#if brand}}
+  <div class="navbar__brand">
+    {{#if logo}}
+    <img src="{{logo}}" alt="{{logoAlt}}" class="navbar__logo h-8 w-auto">
+    {{/if}}
+    {{#if title}}
+    <span class="navbar__title">{{title}}</span>
+    {{#if subtitle}}
+    <span class="navbar__subtitle">{{subtitle}}</span>
+    {{/if}}
+    {{/if}}
+  </div>
+  {{/if}}
+  
+  {{#if items}}
+  <ul class="navbar__nav">
+    {{#each items}}
+    <li class="navbar__item">
+      <a href="{{url}}" class="navbar__link {{#if active}}navbar__link--active{{/if}}" {{#if target}}target="{{target}}"{{/if}}>
+        {{#if icon}}
+        <span class="navbar__link-icon">{{{icon}}}</span>
+        {{/if}}
+        <span class="navbar__link-text">{{text}}</span>
+        {{#if badge}}
+        <span class="navbar__badge">{{badge}}</span>
+        {{/if}}
+      </a>
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+  
+  {{#if actions}}
+  <div class="navbar__actions">
+    {{#if divider}}
+    <div class="navbar__divider"></div>
+    {{/if}}
+    
+    {{#each actions}}
+    <button class="navbar__action {{#if showText}}navbar__action--with-text{{/if}}" title="{{text}}" {{#if action}}data-action="{{action}}"{{/if}}>
+      {{#if icon}}
+      <span class="navbar__action-icon">{{{icon}}}</span>
+      {{/if}}
+      {{#if showText}}
+      <span class="navbar__action-text">{{text}}</span>
+      {{/if}}
+    </button>
+    {{/each}}
+  </div>
+  {{/if}}
+  
+  {{{content}}}
+</div> 

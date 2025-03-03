@@ -38,6 +38,16 @@ window.PhishPhindApp = (function() {
           window.WindowManager.init();
         }
         
+        // Initialize Component Loader if available
+        if (window.ComponentLoader && typeof window.ComponentLoader.init === 'function') {
+          await window.ComponentLoader.init();
+        }
+        
+        // Initialize NavigationManager if available
+        if (window.NavigationManager && typeof window.NavigationManager.init === 'function') {
+          await window.NavigationManager.init();
+        }
+        
         // Initialize ModalModules (new system)
         if (window.ModalModules && typeof window.ModalModules.init === 'function') {
           await window.ModalModules.init();
@@ -48,31 +58,34 @@ window.PhishPhindApp = (function() {
           await window.ModuleManager.init();
         }
         
-        // Register core event handlers
+        // Initialize UI components and event handlers
         registerAppEvents();
-        
-        // Initialize UI
         initializeUI();
+        initDropzone();
         
-        // Check if API key is configured
+        // Check for API configuration
         checkApiConfiguration();
         
+        // Register any error handlers
+        window.onerror = function(message, source, lineno, colno, error) {
+          console.error('Global error:', message, error);
+          // You could also show a notification to the user
+          if (window.Services && window.Services.notification) {
+            window.Services.notification.show({
+              type: 'error',
+              title: 'Application Error',
+              message: 'An unexpected error occurred. Please check the console for details.'
+            });
+          }
+          return false; // Let the default handler run as well
+        };
+        
         state.initialized = true;
-        console.log('PhishPhind application initialized');
+        console.log('PhishPhind application initialized successfully');
         
-        // Show a notification to indicate successful initialization
-        if (window.NotificationService) {
-          window.NotificationService.success('Application initialized successfully');
-        }
-        
-        // Load the analysis module by default
-        // (This ensures the analysis module is ready and subscribed to events)
-        loadModule('analysis');
       } catch (error) {
         console.error('Failed to initialize application:', error);
-        if (window.NotificationService) {
-          window.NotificationService.error('Failed to initialize application: ' + error.message);
-        }
+        alert('The application failed to initialize properly. Please check the console for details.');
       }
     }
     

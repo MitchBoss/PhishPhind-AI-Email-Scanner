@@ -1,0 +1,35 @@
+<div class="form-group {{groupModifier}}">
+  {{#if label}}
+  <label for="{{id}}" class="form-label {{#if required}}form-label--required{{/if}}">{{label}}</label>
+  {{/if}}
+  
+  <div class="select {{modifier}}">
+    <select 
+      class="select__field" 
+      id="{{id}}" 
+      name="{{name}}"
+      {{#if required}}required{{/if}}
+      {{#if disabled}}disabled{{/if}}
+      {{#if multiple}}multiple{{/if}}
+      {{#if size}}size="{{size}}"{{/if}}
+    >
+      {{#if placeholder}}
+      <option value="" {{#if !value}}selected{{/if}} disabled>{{placeholder}}</option>
+      {{/if}}
+      
+      {{#if options}}
+      {{#each options}}
+      <option value="{{this.value}}" {{#if this.selected}}selected{{/if}} {{#if this.disabled}}disabled{{/if}}>{{this.label}}</option>
+      {{/each}}
+      {{/if}}
+    </select>
+  </div>
+  
+  {{#if helpText}}
+  <div class="form-help">{{helpText}}</div>
+  {{/if}}
+  
+  {{#if errorMessage}}
+  <div class="form-error">{{errorMessage}}</div>
+  {{/if}}
+</div> 

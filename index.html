@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PhishPhind: AI Email Scanner</title>
   <!-- Favicon -->
-  <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Tailwind Config -->
@@ -28,11 +28,11 @@
   </script>
   <!-- Core CSS -->
   <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/icons.css" />
-  <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/utilities.css" />
   <link rel="stylesheet" href="css/themes.css" />
-  <link rel="stylesheet" href="css/modals.css" />
+  
+  <!-- Component CSS -->
+  <link rel="stylesheet" href="css/main-modular.css" />
   
   <!-- Third-party Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -86,50 +86,58 @@
   <script>
     // Create a global namespace for our app
     window.PhishPhind = {};
+    
+    // Create a minimal fallback icon if assets are missing
+    if (!window.assetsFallbackInitialized) {
+      window.assetsFallbackInitialized = true;
+      
+      // Create assets directory structure if needed for development environment
+      function createFallbackIcon() {
+        // Simple SVG icon as fallback
+        const fallbackIcon = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        `;
+        
+        // Check if we need to create assets directory structure
+        const iconElement = document.createElement('div');
+        iconElement.id = 'fallback-icon';
+        iconElement.innerHTML = fallbackIcon;
+        iconElement.style.display = 'none';
+        document.body.appendChild(iconElement);
+      }
+      
+      // Call function to create fallback icon
+      createFallbackIcon();
+    }
   </script>
 
-  <!-- Top Navigation Menu -->
-  <nav class="bg-white border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <div class="flex items-center">
-          <div class="text-brand-purple">
-            <img src="/assets/icons/icon.svg" class="h-8 w-8" alt="PhishPhind Logo">
-          </div>
-          <a href="#" class="flex-shrink-0 flex items-center ml-2">
-            <span class="text-xl font-bold text-brand-purple">PhishPhind</span>
-            <span class="ml-2 text-gray-600">AI Email Scanner</span>
-          </a>
-        </div>
-        <div class="flex items-center">
-          <button id="aboutBtn" data-module="about" class="mr-2 inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none">
-            <span class="icon icon-info icon-md mr-1"></span>
-            About
-          </button>
-          <button id="settingsBtn" data-module="settings" class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-            <span class="icon icon-settings icon-md mr-1"></span>
-            Settings
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <!-- Navigation Container -->
+  <div id="navbarContainer" class="fixed top-0 left-0 right-0 z-50"></div>
+  
+  <!-- Sidebar Container -->
+  <div id="sidebarContainer" class="fixed left-0 top-16 z-40 h-[calc(100vh-60px)]"></div>
 
-  <!-- Notification Container (moved lower) -->
+  <!-- Notification Container -->
   <div id="notification-container" class="fixed top-16 right-4 z-50 w-80"></div>
   
   <!-- Modal Container - will be populated dynamically -->
   <div id="modalContainer" class="hidden"></div>
 
   <!-- Main Content Area -->
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="mainContent">
+  <div class="mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16 transition-all duration-300" id="mainContent" style="margin-left: auto !important; margin-right: auto !important; max-width: 1200px; margin-top: 60px !important;">
     <!-- Email Input Section (Always Visible) -->
     <div class="mb-6">
       <h2 class="text-lg font-medium text-gray-900 mb-2">Upload Message File</h2>
       <div class="w-full border-2 border-gray-300 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-brand-purple transition-colors duration-200" id="dropzone">
         <input type="file" class="hidden" id="messageFile" />
         <div class="flex flex-col items-center justify-center">
-          <span class="icon icon-upload icon-xl text-gray-400"></span>
+          <svg class="h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
           <p class="mt-2 text-sm font-medium text-gray-900">Click to upload or drag and drop</p>
           <p class="mt-1 text-xs text-gray-500">This will load the file content into the text box</p>
         </div>
@@ -142,8 +150,10 @@
     </div>
 
     <div class="mb-6">
-      <button id="startAnalysisBtn" class="inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-        <span class="icon icon-search icon-md mr-2"></span>
+      <button id="startAnalysisBtn" class="mt-4 bg-brand-purple hover:bg-brand-purple-dark text-white font-medium py-2 px-6 rounded transition-colors duration-200 inline-flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
         Start Analysis
       </button>
     </div>
@@ -151,7 +161,10 @@
     <!-- Spinner & Progress -->
     <div id="spinner-container" class="text-center mb-6 hidden">
       <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-brand-purple">
-        <span class="icon icon-spinner icon-md mr-3 text-white"></span>
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
         <span id="spinner-message">Processing...</span>
       </div>
     </div>
@@ -162,8 +175,8 @@
       </div>
     </div>
 
-    <!-- Module Container (Dynamic Content) -->
-    <div id="moduleContainer" class="module-container border border-gray-200 rounded-lg p-4 min-h-[200px]"></div>
+    <!-- Module Container - This is where modules will be loaded -->
+    <div id="moduleContainer" class="module-container border border-gray-200 rounded-lg p-4 min-h-[200px] mt-6"></div>
   </div>
 
   <!-- Core JavaScript - Load in dependency order -->
@@ -180,9 +193,13 @@
   <script src="services/stepService.js"></script>
   
   <!-- UI Components -->
+  <script src="js/componentLoader.js"></script>
   <script src="core/windowManager.js"></script>
   <script src="core/modalModules.js"></script>
   <script src="core/moduleManager.js"></script>
+  
+  <!-- Navigation -->
+  <script src="js/navigation.js"></script>
   
   <!-- Main App -->
   <script src="core/app.js"></script>
@@ -194,11 +211,13 @@
       const directories = [
         'modules/about',
         'modules/settings',
-        'modules/analysis'
+        'modules/analysis',
+        'modules/history'  // Add history module directory
       ];
       
+      // Ensure fallback handlers for all navigation items
       // If modules fail to load, ensure the navigation still works
-      document.getElementById('aboutBtn').addEventListener('click', function(e) {
+      document.getElementById('aboutBtn')?.addEventListener('click', function(e) {
         e.preventDefault();
         if (window.ModalModules && typeof window.ModalModules.showModal === 'function') {
           window.ModalModules.showModal('about');
@@ -208,7 +227,7 @@
         }
       });
       
-      document.getElementById('settingsBtn').addEventListener('click', function(e) {
+      document.getElementById('settingsBtn')?.addEventListener('click', function(e) {
         e.preventDefault();
         if (window.ModalModules && typeof window.ModalModules.showModal === 'function') {
           window.ModalModules.showModal('settings');
@@ -228,7 +247,7 @@
             <div class="text-center mb-6">
               <div class="flex justify-center mb-6">
                 <div class="p-3 rounded-full bg-blue-100">
-                  <img src="/assets/icons/icon.svg" class="h-16 w-16 text-blue-500" alt="PhishPhind Logo">
+                  <div id="fallback-icon-container"></div>
                 </div>
               </div>
             </div>
@@ -272,7 +291,6 @@
                     </select>
                   </div>
                   <button id="saveApiSettingsBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-                    <span class="icon icon-check icon-sm mr-2"></span>
                     Save Settings
                   </button>
                 </div>
@@ -295,7 +313,6 @@
             </div>
             <div class="mt-6 text-center">
               <button class="close-modal-btn inline-flex items-center px-6 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">
-                <span class="icon icon-close icon-sm mr-2"></span>
                 Close
               </button>
             </div>
@@ -304,6 +321,12 @@
         
         // Add to body
         document.body.appendChild(overlay);
+        
+        // Insert fallback icon
+        const iconContainer = overlay.querySelector('#fallback-icon-container');
+        if (iconContainer) {
+          iconContainer.innerHTML = document.getElementById('fallback-icon').innerHTML;
+        }
         
         // Start animation
         setTimeout(() => {

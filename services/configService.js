@@ -230,6 +230,15 @@ window.ConfigService = (function() {
       }
     }
     
+    /**
+     * Get models configuration - Alias for getModels for backward compatibility
+     * @returns {array} - Models configuration
+     */
+    function getAvailableModels() {
+      console.log('getAvailableModels called (deprecated) - use getModels instead');
+      return getModels();
+    }
+    
     // Register service if Services exists
     if (window.Services) {
       window.Services.register('ConfigService', {
@@ -241,7 +250,8 @@ window.ConfigService = (function() {
         getSteps,
         saveSteps,
         resetToDefaults,
-        loadDefaultSteps
+        loadDefaultSteps,
+        getAvailableModels
       });
     }
     
@@ -255,6 +265,7 @@ window.ConfigService = (function() {
       getSteps,
       saveSteps,
       resetToDefaults,
-      loadDefaultSteps
+      loadDefaultSteps,
+      getAvailableModels
     };
   })();

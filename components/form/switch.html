@@ -1,0 +1,25 @@
+<div class="form-group {{groupModifier}}">
+  <label class="switch {{modifier}}">
+    <input 
+      type="checkbox" 
+      class="switch__input" 
+      id="{{id}}" 
+      name="{{name}}" 
+      value="{{value}}"
+      {{#if checked}}checked{{/if}}
+      {{#if required}}required{{/if}}
+      {{#if disabled}}disabled{{/if}}
+    >
+    <span class="switch__track"></span>
+    <span class="switch__knob"></span>
+    <span class="switch__label">{{label}}</span>
+  </label>
+  
+  {{#if helpText}}
+  <div class="form-help">{{helpText}}</div>
+  {{/if}}
+  
+  {{#if errorMessage}}
+  <div class="form-error">{{errorMessage}}</div>
+  {{/if}}
+</div> 

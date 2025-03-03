@@ -1,6 +1,30 @@
 /* utilities.css - Utility classes */
 
-/* Display */
+/**
+ * Table of Contents:
+ * 1. Display
+ * 2. Flex
+ * 3. Justify Content
+ * 4. Align Items
+ * 5. Text Alignment
+ * 6. Font Weight
+ * 7. Text Transform
+ * 8. Spacing (Margin & Padding)
+ * 9. Positioning
+ * 10. Border and Rounded Corners
+ * 11. Width and Height
+ * 12. Z-Index
+ * 13. Animations
+ * 14. Cursor
+ * 15. Transitions
+ * 16. Colors
+ * 17. Shadows
+ * 18. Typography
+ * 19. Responsive Helpers
+ * 20. Accessibility
+ */
+
+/* ========== 1. Display ========== */
 .block { display: block; }
 .inline-block { display: inline-block; }
 .inline { display: inline; }
@@ -9,7 +33,7 @@
 .grid { display: grid; }
 .hidden { display: none; }
 
-/* Flex */
+/* ========== 2. Flex ========== */
 .flex-row { flex-direction: row; }
 .flex-col { flex-direction: column; }
 .flex-wrap { flex-wrap: wrap; }
@@ -23,7 +47,7 @@
 .flex-shrink { flex-shrink: 1; }
 .flex-shrink-0 { flex-shrink: 0; }
 
-/* Justify Content */
+/* ========== 3. Justify Content ========== */
 .justify-start { justify-content: flex-start; }
 .justify-end { justify-content: flex-end; }
 .justify-center { justify-content: center; }
@@ -31,20 +55,20 @@
 .justify-around { justify-content: space-around; }
 .justify-evenly { justify-content: space-evenly; }
 
-/* Align Items */
+/* ========== 4. Align Items ========== */
 .items-start { align-items: flex-start; }
 .items-end { align-items: flex-end; }
 .items-center { align-items: center; }
 .items-baseline { align-items: baseline; }
 .items-stretch { align-items: stretch; }
 
-/* Text Alignment */
+/* ========== 5. Text Alignment ========== */
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .text-justify { text-align: justify; }
 
-/* Font Weight */
+/* ========== 6. Font Weight ========== */
 .font-thin { font-weight: 100; }
 .font-extralight { font-weight: 200; }
 .font-light { font-weight: 300; }
@@ -55,13 +79,13 @@
 .font-extrabold { font-weight: 800; }
 .font-black { font-weight: 900; }
 
-/* Text Transform */
+/* ========== 7. Text Transform ========== */
 .uppercase { text-transform: uppercase; }
 .lowercase { text-transform: lowercase; }
 .capitalize { text-transform: capitalize; }
 .normal-case { text-transform: none; }
 
-/* Spacing */
+/* ========== 8. Spacing (Margin & Padding) ========== */
 .m-0 { margin: 0; }
 .m-1 { margin: 0.25rem; }
 .m-2 { margin: 0.5rem; }
@@ -182,19 +206,55 @@
 .pl-12 { padding-left: 3rem; }
 .pl-16 { padding-left: 4rem; }
 
-/* Positioning */
+/* Auto margins for alignment and centering */
+.mx-auto { margin-left: auto; margin-right: auto; }
+.my-auto { margin-top: auto; margin-bottom: auto; }
+.mt-auto { margin-top: auto; }
+.mr-auto { margin-right: auto; }
+.mb-auto { margin-bottom: auto; }
+.ml-auto { margin-left: auto; }
+
+/* Negative margins for special layouts */
+.m-n1 { margin: -0.25rem; }
+.m-n2 { margin: -0.5rem; }
+.m-n3 { margin: -0.75rem; }
+.m-n4 { margin: -1rem; }
+
+/* Gap utility for flex and grid layouts */
+.gap-0 { gap: 0; }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.25rem; }
+.gap-6 { gap: 1.5rem; }
+.gap-8 { gap: 2rem; }
+
+/* ========== 9. Positioning ========== */
 .relative { position: relative; }
 .absolute { position: absolute; }
 .fixed { position: fixed; }
 .sticky { position: sticky; }
 .static { position: static; }
 
-/* Border and Rounded Corners */
+/* Position properties */
+.top-0 { top: 0; }
+.right-0 { right: 0; }
+.bottom-0 { bottom: 0; }
+.left-0 { left: 0; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+
+/* ========== 10. Border and Rounded Corners ========== */
 .border { border-width: 1px; border-style: solid; }
 .border-t { border-top-width: 1px; border-top-style: solid; }
 .border-r { border-right-width: 1px; border-right-style: solid; }
 .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
 .border-l { border-left-width: 1px; border-left-style: solid; }
+
+.border-0 { border-width: 0; }
+.border-2 { border-width: 2px; }
+.border-4 { border-width: 4px; }
+.border-8 { border-width: 8px; }
 
 .rounded-none { border-radius: 0; }
 .rounded-sm { border-radius: 0.125rem; }
@@ -206,13 +266,33 @@
 .rounded-3xl { border-radius: 1.5rem; }
 .rounded-full { border-radius: 9999px; }
 
-/* Width and Height */
+/* ========== 11. Width and Height ========== */
 .w-full { width: 100%; }
 .w-auto { width: auto; }
 .w-screen { width: 100vw; }
 .w-min { width: min-content; }
 .w-max { width: max-content; }
 .w-fit { width: fit-content; }
+
+/* Fixed widths */
+.w-0 { width: 0; }
+.w-1 { width: 0.25rem; }
+.w-2 { width: 0.5rem; }
+.w-4 { width: 1rem; }
+.w-8 { width: 2rem; }
+.w-12 { width: 3rem; }
+.w-16 { width: 4rem; }
+.w-24 { width: 6rem; }
+.w-32 { width: 8rem; }
+.w-48 { width: 12rem; }
+.w-64 { width: 16rem; }
+
+/* Percentage widths */
+.w-1/2 { width: 50%; }
+.w-1/3 { width: 33.333333%; }
+.w-2/3 { width: 66.666667%; }
+.w-1/4 { width: 25%; }
+.w-3/4 { width: 75%; }
 
 .h-full { height: 100%; }
 .h-auto { height: auto; }
@@ -221,7 +301,20 @@
 .h-max { height: max-content; }
 .h-fit { height: fit-content; }
 
-/* Z-Index */
+/* Fixed heights */
+.h-0 { height: 0; }
+.h-1 { height: 0.25rem; }
+.h-2 { height: 0.5rem; }
+.h-4 { height: 1rem; }
+.h-8 { height: 2rem; }
+.h-12 { height: 3rem; }
+.h-16 { height: 4rem; }
+.h-24 { height: 6rem; }
+.h-32 { height: 8rem; }
+.h-48 { height: 12rem; }
+.h-64 { height: 16rem; }
+
+/* ========== 12. Z-Index ========== */
 .z-0 { z-index: 0; }
 .z-10 { z-index: 10; }
 .z-20 { z-index: 20; }
@@ -230,7 +323,12 @@
 .z-50 { z-index: 50; }
 .z-auto { z-index: auto; }
 
-/* Animations */
+/* Application-specific z-indices */
+.z-modal-backdrop { z-index: var(--z-modal-backdrop); }
+.z-modal { z-index: var(--z-modal); }
+.z-notification { z-index: var(--z-notification); }
+
+/* ========== 13. Animations ========== */
 .fade-in {
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -240,29 +338,36 @@
 }
 
 .slide-in {
-  animation: slideIn 0.3s ease-in-out;
+  animation: slideInFromRight 0.3s ease-in-out;
 }
 
 .slide-out {
-  animation: slideOut 0.3s ease-in-out;
+  animation: slideOutToRight 0.3s ease-in-out;
 }
 
-/* Cursor */
+/* 
+  Note: For more complex animations, use the animate-* 
+  classes from animations.css 
+*/
+
+/* ========== 14. Cursor ========== */
 .cursor-pointer { cursor: pointer; }
 .cursor-not-allowed { cursor: not-allowed; }
 .cursor-default { cursor: default; }
 .cursor-move { cursor: move; }
 .cursor-grab { cursor: grab; }
 .cursor-grabbing { cursor: grabbing; }
+.cursor-help { cursor: help; }
+.cursor-text { cursor: text; }
+.cursor-wait { cursor: wait; }
 
-/* Transitions */
+/* ========== 15. Transitions ========== */
 .transition { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 .transition-colors { transition-property: color, background-color, border-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 .transition-shadow { transition-property: box-shadow; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 .transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 
-/* Duration */
 .duration-75 { transition-duration: 75ms; }
 .duration-100 { transition-duration: 100ms; }
 .duration-150 { transition-duration: 150ms; }
@@ -271,3 +376,229 @@
 .duration-500 { transition-duration: 500ms; }
 .duration-700 { transition-duration: 700ms; }
 .duration-1000 { transition-duration: 1000ms; }
+
+/* Timing functions */
+.ease-linear { transition-timing-function: linear; }
+.ease-in { transition-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+.ease-out { transition-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+.ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* ========== 16. Colors ========== */
+/* Text colors */
+.text-primary { color: var(--color-primary); }
+.text-primary-light { color: var(--color-primary-light); }
+.text-primary-dark { color: var(--color-primary-dark); }
+
+.text-secondary { color: var(--color-secondary); }
+.text-secondary-light { color: var(--color-secondary-light); }
+.text-secondary-dark { color: var(--color-secondary-dark); }
+
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-danger { color: var(--color-danger); }
+.text-info { color: var(--color-info); }
+
+.text-white { color: var(--color-white); }
+.text-black { color: var(--color-black); }
+.text-gray-50 { color: var(--color-gray-50); }
+.text-gray-100 { color: var(--color-gray-100); }
+.text-gray-200 { color: var(--color-gray-200); }
+.text-gray-300 { color: var(--color-gray-300); }
+.text-gray-400 { color: var(--color-gray-400); }
+.text-gray-500 { color: var(--color-gray-500); }
+.text-gray-600 { color: var(--color-gray-600); }
+.text-gray-700 { color: var(--color-gray-700); }
+.text-gray-800 { color: var(--color-gray-800); }
+.text-gray-900 { color: var(--color-gray-900); }
+
+/* Background colors */
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-light { background-color: var(--color-primary-light); }
+.bg-primary-dark { background-color: var(--color-primary-dark); }
+
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-secondary-light { background-color: var(--color-secondary-light); }
+.bg-secondary-dark { background-color: var(--color-secondary-dark); }
+
+.bg-success { background-color: var(--color-success); }
+.bg-warning { background-color: var(--color-warning); }
+.bg-danger { background-color: var(--color-danger); }
+.bg-info { background-color: var(--color-info); }
+
+.bg-white { background-color: var(--color-white); }
+.bg-black { background-color: var(--color-black); }
+.bg-gray-50 { background-color: var(--color-gray-50); }
+.bg-gray-100 { background-color: var(--color-gray-100); }
+.bg-gray-200 { background-color: var(--color-gray-200); }
+.bg-gray-300 { background-color: var(--color-gray-300); }
+.bg-gray-400 { background-color: var(--color-gray-400); }
+.bg-gray-500 { background-color: var(--color-gray-500); }
+.bg-gray-600 { background-color: var(--color-gray-600); }
+.bg-gray-700 { background-color: var(--color-gray-700); }
+.bg-gray-800 { background-color: var(--color-gray-800); }
+.bg-gray-900 { background-color: var(--color-gray-900); }
+
+.bg-transparent { background-color: transparent; }
+
+/* Border colors */
+.border-primary { border-color: var(--color-primary); }
+.border-primary-light { border-color: var(--color-primary-light); }
+.border-primary-dark { border-color: var(--color-primary-dark); }
+
+.border-secondary { border-color: var(--color-secondary); }
+.border-secondary-light { border-color: var(--color-secondary-light); }
+.border-secondary-dark { border-color: var(--color-secondary-dark); }
+
+.border-success { border-color: var(--color-success); }
+.border-warning { border-color: var(--color-warning); }
+.border-danger { border-color: var(--color-danger); }
+.border-info { border-color: var(--color-info); }
+
+.border-white { border-color: var(--color-white); }
+.border-black { border-color: var(--color-black); }
+.border-gray-100 { border-color: var(--color-gray-100); }
+.border-gray-200 { border-color: var(--color-gray-200); }
+.border-gray-300 { border-color: var(--color-gray-300); }
+.border-gray-400 { border-color: var(--color-gray-400); }
+.border-gray-500 { border-color: var(--color-gray-500); }
+.border-gray-600 { border-color: var(--color-gray-600); }
+.border-gray-700 { border-color: var(--color-gray-700); }
+.border-gray-800 { border-color: var(--color-gray-800); }
+.border-gray-900 { border-color: var(--color-gray-900); }
+
+.border-transparent { border-color: transparent; }
+
+/* ========== 17. Shadows ========== */
+.shadow-none { box-shadow: none; }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow { box-shadow: var(--shadow); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+
+/* ========== 18. Typography ========== */
+/* Font sizes */
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+.text-3xl { font-size: var(--font-size-3xl); }
+.text-4xl { font-size: var(--font-size-4xl); }
+
+/* Font families */
+.font-sans { font-family: var(--font-family-base); }
+.font-mono { font-family: var(--font-family-mono); }
+
+/* Line heights */
+.leading-none { line-height: var(--line-height-none); }
+.leading-tight { line-height: var(--line-height-tight); }
+.leading-snug { line-height: var(--line-height-snug); }
+.leading-normal { line-height: var(--line-height-normal); }
+.leading-relaxed { line-height: var(--line-height-relaxed); }
+.leading-loose { line-height: var(--line-height-loose); }
+
+/* Text decoration */
+.underline { text-decoration: underline; }
+.line-through { text-decoration: line-through; }
+.no-underline { text-decoration: none; }
+
+/* Text overflow */
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text-ellipsis { text-overflow: ellipsis; }
+.text-clip { text-overflow: clip; }
+
+/* Whitespace */
+.whitespace-normal { white-space: normal; }
+.whitespace-nowrap { white-space: nowrap; }
+.whitespace-pre { white-space: pre; }
+.whitespace-pre-line { white-space: pre-line; }
+.whitespace-pre-wrap { white-space: pre-wrap; }
+
+/* Word break */
+.break-normal { overflow-wrap: normal; word-break: normal; }
+.break-words { overflow-wrap: break-word; }
+.break-all { word-break: break-all; }
+
+/* ========== 19. Responsive Helpers ========== */
+/* Visibility */
+.mobile-only {
+  display: block;
+}
+.tablet-only {
+  display: none;
+}
+.desktop-only {
+  display: none;
+}
+.hide-mobile {
+  display: none;
+}
+
+@media screen and (min-width: 640px) {
+  .mobile-only {
+    display: none;
+  }
+  .tablet-only {
+    display: block;
+  }
+  .hide-mobile {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .tablet-only {
+    display: none;
+  }
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Responsive layout */
+.stack-mobile {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 640px) {
+  .stack-mobile {
+    flex-direction: row;
+  }
+}
+
+/* ========== 20. Accessibility ========== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+.focus-outline-none:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-visible:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
