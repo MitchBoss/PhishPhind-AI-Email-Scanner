@@ -9,8 +9,8 @@
       "provider": "OpenAI"
     },
     {
-      "id": "gpt-4",
-      "displayName": "GPT-4",
+      "id": "gpt-4o",
+      "displayName": "GPT-4o",
       "provider": "OpenAI"
     },
     {

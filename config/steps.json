@@ -1,42 +1,27 @@
 [
   {
     "id": "email_parsing",
-    "file": "steps/email_parsing.txt",
+    "file": "steps/01_email_parsing.txt",
     "position": 0
   },
   {
-    "id": "sender_verification",
-    "file": "steps/sender_verification.txt",
+    "id": "sender_header_analysis",
+    "file": "steps/02_sender_header_analysis.txt",
     "position": 1
   },
   {
-    "id": "content_security_analysis",
-    "file": "steps/content_security_analysis.txt",
+    "id": "link_attachment_analysis",
+    "file": "steps/03_link_attachment_analysis.txt",
     "position": 2
   },
   {
-    "id": "link_attachment_sanitization",
-    "file": "steps/link_attachment_sanitization.txt",
+    "id": "content_analysis",
+    "file": "steps/04_content_analysis.txt",
     "position": 3
   },
   {
-    "id": "contextual_correlation",
-    "file": "steps/contextual_correlation.txt",
-    "position": 4
-  },
-  {
-    "id": "risk_consolidation",
-    "file": "steps/risk_consolidation.txt",
-    "position": 5
-  },
-  {
-    "id": "actionable_recommendations",
-    "file": "steps/actionable_recommendations.txt",
-    "position": 6
-  },
-  {
     "id": "final_assessment",
-    "file": "steps/final_assessment.txt",
-    "position": 7
+    "file": "steps/05_final_assessment.txt",
+    "position": 4
   }
 ]

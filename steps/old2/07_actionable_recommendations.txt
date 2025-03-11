@@ -25,4 +25,4 @@ Please provide your response enclosed EXACTLY within the following tags:
 - **Reporting Procedures:** <Advise on steps to report the email if it is confirmed malicious>
 
 [Response Summary]
-A brief summary: Provide a one-sentence recommendation outlining the next steps, including manual review if necessary.
+A brief summary: Provide a one-sentence recommendation outlining the next steps, including manual review if necessary. 

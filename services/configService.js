@@ -7,13 +7,13 @@ window.ConfigService = (function() {
     const DEFAULT_CONFIG = {
       api: {
         apiKey: '',
-        model: 'gpt-4o-mini'
+        model: 'gpt-4o'
       },
       steps: [],
       models: [
         {
-          "id": "gpt-4o-mini",
-          "displayName": "GPT-4o Mini",
+          "id": "gpt-4o",
+          "displayName": "GPT-4o",
           "provider": "OpenAI"
         },
         {
@@ -22,8 +22,8 @@ window.ConfigService = (function() {
           "provider": "OpenAI"
         },
         {
-          "id": "gpt-4",
-          "displayName": "GPT-4",
+          "id": "gpt-4o",
+          "displayName": "GPT-4o",
           "provider": "OpenAI"
         }
       ]

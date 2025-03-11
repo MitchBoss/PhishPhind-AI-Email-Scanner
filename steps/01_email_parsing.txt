@@ -1,0 +1,38 @@
+[MENU_Name]
+Email Parsing
+
+[STEP_PROMPT]
+Using the full raw email provided as `message_content`, extract the following components from the original email (if the email was forwarded from someone else, ignore this and make all assessments on the first, original email):
+- **Email Headers:** Extract the headers of the original email, including sender IP, metadata, routing information, and all header fields. If the email is forwarded, extract original email headers and ignore any additional headers added by forwarding.
+- **Subject:** Extract the subject of the original email, omitting any forwarded indicators (e.g., "Fwd:" or similar).
+- **From Details:** Extract the From Name, sender email address, and the Reply-To address from the original email.
+- **Message Body:** Extract both the plain text and HTML versions of the original email only, excluding any content added by forwarding.
+- **Attachments:** List all attachments from the original email with file names and file types.
+- **Embedded URLs:** Extract any URLs embedded within the original email.
+
+**Tasks:**
+- Extract and list the original email headers.
+- Extract the subject of the original email.
+- Identify and extract the From Name, sender email address, and Reply-To address from the original email.
+- Extract the plain text version of the original email.
+- Identify and list attachments with file names and file types from the original email.
+- Extract any embedded URLs from the original email.
+
+message_content: " {message_content} "
+
+[LLM_INSTRUCTIONS] Please provide your response enclosed EXACTLY within the following tags:
+
+[Response]
+**Email Parsing Results:**
+- **Headers:** <Extracted original email headers including sender IP, metadata, and routing details>
+- **Subject:** <Extracted subject of the original email>
+- **From Details:**  
+  - **From Name:** <Extracted From Name>  
+  - **Sender Email:** <Extracted sender email address>  
+  - **Reply-To Address:** <Extracted Reply-To address>
+- **Body (Plain Text):** <Extracted plain text body of the original email>
+- **Attachments:** <List of attachments with file names and types from the original email>
+- **Embedded URLs:** <List of extracted URLs from the original email>
+
+[Response Summary]
+A brief summary: Indicate whether all original email components were successfully extracted and note any missing elements.

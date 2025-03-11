@@ -29,4 +29,4 @@ Please provide your response enclosed EXACTLY within the following tags:
 - **Manual Review Flag:** <Yes/No based on ambiguous indicators>
 
 [Response Summary]
-A brief summary: Provide a one-sentence assessment of the email content based solely on these objective markers.
+A brief summary: Provide a one-sentence assessment of the email content based solely on these objective markers. 
