@@ -1,0 +1,28 @@
+[MENU_Name]
+Actionable Recommendations
+
+[STEP_PROMPT]
+Using the risk level and findings from `risk_consolidation_output`, provide clear and actionable recommendations for the cyber analyst. Since the LLM does not perform external verification, include recommendations for manual checks if uncertainty remains (e.g., WHOIS lookup, SPF/DKIM review, URL hover/expansion).
+
+**Tasks:**
+- Highlight the most critical objective issues identified.
+- Suggest manual investigation steps for any ambiguous or borderline indicators.
+- Recommend precautionary measures (e.g., refrain from clicking on links) based on the risk level.
+- Advise on reporting procedures to IT security if malicious indicators are confirmed.
+
+risk_consolidation_output: " {risk_consolidation_output} "
+
+[LLM_INSTRUCTIONS]
+Please provide your response enclosed EXACTLY within the following tags:
+
+[Response]
+**Recommendations:**
+- **Critical Issues:** <List the most critical objective issues identified>
+- **Suggested Actions:**
+  - Action 1: <E.g., "Manually verify sender identity using WHOIS lookup.">
+  - Action 2: <E.g., "Hover over URLs to confirm their destination.">
+- **Precautionary Measures:** <List recommended measures such as "Do not click on links until verified.">
+- **Reporting Procedures:** <Advise on steps to report the email if it is confirmed malicious>
+
+[Response Summary]
+A brief summary: Provide a one-sentence recommendation outlining the next steps, including manual review if necessary.

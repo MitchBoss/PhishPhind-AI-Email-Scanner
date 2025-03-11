@@ -1,0 +1,26 @@
+[MENU_Name]
+Contextual Correlation
+
+[STEP_PROMPT]
+Using the outputs from `email_parsing_output`, `sender_verification_output`, and `content_evaluation_output`, correlate the objective details of the email with typical, legitimate communications. Identify if the sender’s details, display name, and header fields match expected patterns. If any discrepancies are observed, note that manual verification (e.g., comparing with known good samples) is recommended.
+
+**Tasks:**
+- Compare sender details and header information for consistency.
+- Identify any objective discrepancies between expected and actual values.
+- Recommend manual review if any discrepancies are found.
+
+email_parsing_output: " {email_parsing_output} "
+sender_verification_output: " {sender_verification_output} "
+content_evaluation_output: " {content_evaluation_output} "
+
+[LLM_INSTRUCTIONS]
+Please provide your response enclosed EXACTLY within the following tags:
+
+[Response]
+**Contextual Correlation Findings:**
+- **Consistency Check:** <Describe whether sender details and header information appear consistent>
+- **Discrepancies:** <List any objective discrepancies noted>
+- **Manual Review Note:** <E.g., "Recommend manual review if discrepancies are observed.">
+
+[Response Summary]
+A brief summary: Provide a one-sentence assessment of how well the email’s context aligns with expected legitimate communications.

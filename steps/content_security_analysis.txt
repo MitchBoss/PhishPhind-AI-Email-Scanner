@@ -1,0 +1,32 @@
+[MENU_Name]
+Content Evaluation
+
+[STEP_PROMPT]
+Using the email body extracted in `email_parsing_output` (or directly from `message_content` if necessary), analyze the content for objective markers. Focus on clearly identifiable elements such as:
+- Presence of urgent or threatening phrases.
+- Requests for sensitive information.
+- Use of generic greetings or lack of personalization.
+
+Do not perform subjective interpretation beyond what is directly observable. If any markers appear ambiguous, flag that manual review is advised.
+
+**Tasks:**
+- Identify urgent/threatening phrases in the content.
+- List any requests for sensitive information.
+- Note the presence of generic or non-personalized greetings.
+- Flag if any indicators are ambiguous and suggest manual review.
+
+email_parsing_output: " {email_parsing_output} "
+message_content: " {message_content} "
+
+[LLM_INSTRUCTIONS]
+Please provide your response enclosed EXACTLY within the following tags:
+
+[Response]
+**Content Evaluation Findings:**
+- **Urgent/Threatening Phrases:** <List any detected phrases>
+- **Requests for Sensitive Information:** <List any requests identified>
+- **Generic/Non-Personalized Greetings:** <Note if present>
+- **Manual Review Flag:** <Yes/No based on ambiguous indicators>
+
+[Response Summary]
+A brief summary: Provide a one-sentence assessment of the email content based solely on these objective markers.
