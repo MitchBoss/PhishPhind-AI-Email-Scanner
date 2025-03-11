@@ -24,15 +24,21 @@ message_content: " {message_content} "
 
 [Response]
 **Email Parsing Results:**
+
 - **Headers:** <Extracted original email headers including sender IP, metadata, and routing details>
+
 - **Subject:** <Extracted subject of the original email>
+
 - **From Details:**  
   - **From Name:** <Extracted From Name>  
   - **Sender Email:** <Extracted sender email address>  
   - **Reply-To Address:** <Extracted Reply-To address>
-- **Body (Plain Text):** <Extracted plain text body of the original email>
+
 - **Attachments:** <List of attachments with file names and types from the original email>
+
 - **Embedded URLs:** <List of extracted URLs from the original email>
+
+- **Body (Plain Text):** <Extracted plain text body of the original email>
 
 [Response Summary]
 A brief summary: Indicate whether all original email components were successfully extracted and note any missing elements.
