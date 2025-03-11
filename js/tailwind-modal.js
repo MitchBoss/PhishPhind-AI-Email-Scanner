@@ -3,6 +3,8 @@
 const TailwindModal = (function() {
     // Initialize modal functionality
     function init() {
+      console.log("[MODAL] TailwindModal.init called");
+      
       // Settings modal
       initModal('settingsModal', 'openSettingsBtn', '.closeSettings', 'settingsModalBackdrop');
       
@@ -18,58 +20,21 @@ const TailwindModal = (function() {
       // Initialize variable picker dropdown
       initDropdown('variablePickerBtn', 'variablePickerMenu');
       
-      // Initialize drag and drop
-      initDragAndDrop();
+      // Do NOT initialize drag and drop - let app.js handle it
+      // initDragAndDrop();
+      
+      // Expose TailwindModal to the window
+      window.TailwindModal = window.TailwindModal || {};
+      window.TailwindModal.showModal = showModal;
+      window.TailwindModal.hideModal = hideModal;
+      
+      console.log("[MODAL] TailwindModal initialized and exposed globally");
     }
     
-    // Initialize drag and drop functionality
+    // This function is kept for reference but not called
     function initDragAndDrop() {
-      const dropzone = document.getElementById('dropzone');
-      const fileInput = document.getElementById('messageFile');
-      
-      if (!dropzone || !fileInput) return;
-      
-      // Handle click on dropzone
-      dropzone.addEventListener('click', () => {
-        fileInput.click();
-      });
-      
-      // Handle drag events
-      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropzone.addEventListener(eventName, preventDefaults, false);
-      });
-      
-      function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      
-      // Handle dragenter and dragover
-      ['dragenter', 'dragover'].forEach(eventName => {
-        dropzone.addEventListener(eventName, () => {
-          dropzone.classList.add('drag-over');
-        }, false);
-      });
-      
-      // Handle dragleave and drop
-      ['dragleave', 'drop'].forEach(eventName => {
-        dropzone.addEventListener(eventName, () => {
-          dropzone.classList.remove('drag-over');
-        }, false);
-      });
-      
-      // Handle file drop
-      dropzone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        
-        if (files.length) {
-          fileInput.files = files;
-          // Trigger change event
-          const event = new Event('change');
-          fileInput.dispatchEvent(event);
-        }
-      }, false);
+      console.log("[MODAL] initDragAndDrop would be called here, but we're letting app.js handle it");
+      // All drag and drop functionality is now handled by app.js
     }
     
     // Initialize a specific modal
@@ -149,25 +114,39 @@ const TailwindModal = (function() {
     
     // Initialize dropdown
     function initDropdown(btnId, menuId) {
+      console.log("[DROPDOWN] Initializing dropdown for button:", btnId, "and menu:", menuId);
+      
+      // Skip initializing the variable picker as it's handled by settings.js
+      if (btnId === 'variablePickerBtn') {
+        console.log("[DROPDOWN] Skipping variablePickerBtn initialization since it's handled by settings.js");
+        return;
+      }
+      
       const btn = document.getElementById(btnId);
       const menu = document.getElementById(menuId);
+      
+      console.log("[DROPDOWN] Button found:", !!btn, "Menu found:", !!menu);
       
       if (!btn || !menu) return;
       
       btn.addEventListener('click', (e) => {
+        console.log("[DROPDOWN] Button clicked for dropdown:", btnId);
         e.stopPropagation();
         menu.classList.toggle('hidden');
+        console.log("[DROPDOWN] Menu visibility toggled to:", menu.classList.contains('hidden') ? "hidden" : "visible");
       });
       
       // Close dropdown when clicking outside
       document.addEventListener('click', () => {
         if (!menu.classList.contains('hidden')) {
           menu.classList.add('hidden');
+          console.log("[DROPDOWN] Menu hidden by document click event");
         }
       });
       
       // Prevent dropdown from closing when clicking inside it
       menu.addEventListener('click', (e) => {
+        console.log("[DROPDOWN] Click inside menu");
         e.stopPropagation();
       });
     }

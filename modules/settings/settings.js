@@ -23,6 +23,8 @@ const SettingsModule = (function() {
     
     // Initialize module
     async function init() {
+      console.log("[SETTINGS] SettingsModule.init called");
+      
       // Subscribe to events
       if (window.EventBus) {
         window.EventBus.subscribe('config:api:updated', handleApiConfigUpdate);
@@ -31,6 +33,18 @@ const SettingsModule = (function() {
         window.EventBus.subscribe('modal:shown', handleModalShown);
         window.EventBus.subscribe('settings:open', openSettings);
       }
+      
+      // Add global functions for cross-module access
+      addGlobalFunctions();
+      
+      // Expose debugging functions globally
+      window.PhishPhindDebug = window.PhishPhindDebug || {};
+      window.PhishPhindDebug.toggleVariablePicker = toggleVariablePicker;
+      window.PhishPhindDebug.updateVariablePicker = updateVariablePicker;
+      window.PhishPhindDebug.insertVariableIntoPrompt = insertVariableIntoPrompt;
+      
+      console.log("[SETTINGS] All debug functions exposed via PhishPhindDebug global object");
+      console.log("[SETTINGS] You can use window.PhishPhindDebug.toggleVariablePicker() to manually show the picker");
       
       // Preload data
       if (window.ConfigService) {
@@ -448,6 +462,8 @@ const SettingsModule = (function() {
     
     // Set up event handlers
     function setupEventHandlers() {
+      console.log("[SETUP] Setting up event handlers");
+      
       // API Settings
       const saveApiSettingsBtn = document.getElementById('saveApiSettingsBtn');
       if (saveApiSettingsBtn) {
@@ -501,10 +517,50 @@ const SettingsModule = (function() {
         exportStepBtn.addEventListener('click', handleExportStep);
       }
       
-      // Variable Picker
+      // Variable Picker - Enhanced with better debugging
       const variablePickerBtn = document.getElementById('variablePickerBtn');
+      console.log("[SETUP] Variable picker button found:", !!variablePickerBtn, variablePickerBtn);
+      console.log("[SETUP] Variable picker button HTML:", variablePickerBtn ? variablePickerBtn.outerHTML : "Not found");
+      
+      // Check if parent elements are properly rendered
       if (variablePickerBtn) {
-        variablePickerBtn.addEventListener('click', toggleVariablePicker);
+        console.log("[SETUP] Variable picker button parent:", variablePickerBtn.parentElement);
+        console.log("[SETUP] Variable picker button is visible:", variablePickerBtn.offsetParent !== null);
+        
+        // Enhanced click event with detailed logging
+        console.log("[SETUP] Adding click event listener to variable picker button");
+        variablePickerBtn.onclick = function(e) {
+          console.log("[CLICK] Variable picker button clicked with onclick handler");
+          toggleVariablePicker(e);
+          return false; // Prevent default and stop propagation
+        };
+        
+        // Also add regular event listener as backup
+        variablePickerBtn.addEventListener('click', function(e) {
+          console.log("[CLICK] Variable picker button clicked with addEventListener");
+          e.preventDefault();
+          e.stopPropagation();
+          toggleVariablePicker(e);
+        }, true); // Use capture phase to ensure our handler runs first
+        
+        // Add direct access for debugging
+        window.showVariablePicker = function() {
+          console.log("[DEBUG] Manually showing variable picker");
+          toggleVariablePicker({
+            preventDefault: function() {},
+            stopPropagation: function() {}
+          });
+        };
+        
+        console.log("[SETUP] Direct debug access added: Call window.showVariablePicker() to test");
+      } else {
+        console.error("[SETUP] CRITICAL: Variable picker button not found in DOM!");
+        // Look for any button in the document to debug
+        const allButtons = document.querySelectorAll('button');
+        console.log("[SETUP] All buttons found:", allButtons.length);
+        allButtons.forEach((btn, index) => {
+          console.log(`[SETUP] Button ${index}:`, btn.outerHTML);
+        });
       }
       
       document.addEventListener('click', (e) => {
@@ -512,6 +568,7 @@ const SettingsModule = (function() {
         const btn = document.getElementById('variablePickerBtn');
         if (menu && btn && !menu.contains(e.target) && e.target !== btn) {
           menu.classList.add('hidden');
+          console.log("[DOCUMENT] Hiding variable picker menu from document click event");
         }
       });
       
@@ -763,6 +820,7 @@ const SettingsModule = (function() {
         const li = document.createElement('li');
         li.className = 'p-3 border-b border-gray-200 flex justify-between items-center';
         li.dataset.id = step.id;
+        li.style.cursor = 'pointer'; // Add pointer cursor to indicate clickable
         
         li.innerHTML = `
           <div class="step-drag-handle mr-2 text-gray-400">⋮⋮</div>
@@ -773,7 +831,7 @@ const SettingsModule = (function() {
           </div>
           <div class="flex space-x-2">
             <button class="select-step inline-flex items-center px-2 py-1 text-xs font-medium rounded border border-brand-purple text-brand-purple bg-white hover:bg-brand-purple hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-colors duration-200">
-              Select
+              Edit Step
             </button>
             <button class="clone-step inline-flex items-center px-2 py-1 text-xs font-medium rounded border border-green-500 text-green-600 bg-white hover:bg-green-500 hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
               Clone
@@ -786,7 +844,15 @@ const SettingsModule = (function() {
         
         stepList.appendChild(li);
         
-        // Add event listeners
+        // Make the whole row clickable for showing dependencies
+        li.addEventListener('click', (e) => {
+          // Don't trigger if clicking on a button
+          if (!e.target.closest('button')) {
+            showStepDependencies(step);
+          }
+        });
+        
+        // Add event listeners for buttons
         li.querySelector('.select-step').addEventListener('click', () => handleEditStep(step.id));
         li.querySelector('.clone-step').addEventListener('click', () => handleCloneStep(step.id));
         li.querySelector('.delete-step').addEventListener('click', () => handleDeleteStep(step.id));
@@ -899,13 +965,6 @@ const SettingsModule = (function() {
       // Disable ID field if not virtual
       stepIdField.disabled = !step.isVirtual;
       
-      // Show/hide reset button
-      if (step.isVirtual || !step.fileSource) {
-        resetStepBtn.style.display = 'none';
-      } else {
-        resetStepBtn.style.display = 'inline-flex';
-      }
-      
       // Show dependencies
       showStepDependencies(step);
       
@@ -965,9 +1024,17 @@ const SettingsModule = (function() {
     
     // Update variable picker
     function updateVariablePicker() {
-      const menu = document.getElementById('variablePickerMenu');
-      if (!menu) return;
+      console.log("[UPDATE] Updating variable picker");
       
+      const menu = document.getElementById('variablePickerMenu');
+      console.log("[UPDATE] Menu element found:", !!menu, menu);
+      
+      if (!menu) {
+        console.error("[UPDATE] Menu element not found!");
+        return;
+      }
+      
+      console.log("[UPDATE] Clearing menu content");
       menu.innerHTML = '';
       
       // Add message_content variable
@@ -976,21 +1043,57 @@ const SettingsModule = (function() {
       ];
       
       // Add variables from all steps
-      state.steps.forEach(step => {
-        if (step.id !== state.currentEditingStep) {
-          variables.push({
-            id: `${step.id}_output`,
-            name: `${step.name} (Output)`,
-            category: 'Step Output'
-          });
+      if (state.steps && state.steps.length) {
+        console.log("[UPDATE] Adding variables from steps:", state.steps.length);
+        
+        state.steps.forEach(step => {
+          if (step.id !== state.currentEditingStep) {
+            variables.push({
+              id: `${step.id}_output`,
+              name: `${step.name || step.id} (Output)`,
+              category: 'Step Output',
+              dependency: step.id
+            });
+            
+            variables.push({
+              id: `${step.id}_summary`,
+              name: `${step.name || step.id} (Summary)`,
+              category: 'Step Summary',
+              dependency: step.id
+            });
+          }
+        });
+      } else {
+        console.log("[UPDATE] No steps found in state:", state.steps);
+      }
+      
+      // Add history variables if available
+      if (window.PersistenceManager && typeof window.PersistenceManager.getHistory === 'function') {
+        try {
+          const history = window.PersistenceManager.getHistory();
+          console.log("[UPDATE] History retrieved:", history ? history.length : 0);
           
-          variables.push({
-            id: `${step.id}_summary`,
-            name: `${step.name} (Summary)`,
-            category: 'Step Summary'
-          });
+          if (history && history.length > 0) {
+            const recentAnalysis = history[0].analysis;
+            if (recentAnalysis) {
+              console.log("[UPDATE] Recent analysis has keys:", Object.keys(recentAnalysis));
+              
+              Object.keys(recentAnalysis).forEach(stepId => {
+                variables.push({
+                  id: `history_${stepId}`,
+                  name: `${stepId.replace(/_/g, ' ')} (Previous Analysis)`,
+                  category: 'Analysis History',
+                  historyData: true
+                });
+              });
+            }
+          }
+        } catch (error) {
+          console.error("[UPDATE] Error getting history:", error);
         }
-      });
+      }
+      
+      console.log("[UPDATE] Total variables:", variables.length);
       
       // Group variables by category
       const categories = {};
@@ -1001,60 +1104,225 @@ const SettingsModule = (function() {
         categories[variable.category].push(variable);
       });
       
-      // Add variables to menu
-      Object.keys(categories).forEach(category => {
+      console.log("[UPDATE] Categories:", Object.keys(categories));
+      
+      try {
+        // Add variables to menu
+        Object.keys(categories).forEach((category, categoryIndex) => {
+          console.log("[UPDATE] Adding category:", category);
+          
+          const header = document.createElement('h6');
+          header.className = 'dropdown-header text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-2';
+          header.textContent = `${category} Variables`;
+          menu.appendChild(header);
+          
+          categories[category].forEach(variable => {
+            const item = document.createElement('a');
+            item.className = 'flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150';
+            item.href = '#';
+            item.dataset.variable = `{${variable.id}}`;
+            
+            // Variable name
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = variable.name;
+            nameSpan.className = 'flex-grow';
+            item.appendChild(nameSpan);
+            
+            // Add dependency badge if needed
+            if (variable.dependency) {
+              const dependencyBadge = document.createElement('span');
+              dependencyBadge.className = 'ml-2 px-1.5 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-full';
+              dependencyBadge.textContent = 'Depends';
+              item.appendChild(dependencyBadge);
+            }
+            
+            // Add history badge if needed
+            if (variable.historyData) {
+              const historyBadge = document.createElement('span');
+              historyBadge.className = 'ml-2 px-1.5 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full';
+              historyBadge.textContent = 'History';
+              item.appendChild(historyBadge);
+            }
+            
+            // Add click event directly
+            item.onclick = function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("[UPDATE] Variable item clicked:", variable.id);
+              insertVariableIntoPrompt(item.dataset.variable);
+              menu.classList.add('hidden');
+              return false;
+            };
+            
+            menu.appendChild(item);
+            console.log("[UPDATE] Added variable:", variable.id);
+          });
+          
+          // Add divider between categories
+          if (categoryIndex < Object.keys(categories).length - 1) {
+            const divider = document.createElement('div');
+            divider.className = 'border-t border-gray-200 my-1';
+            menu.appendChild(divider);
+          }
+        });
+        
+        console.log("[UPDATE] Variable picker menu populated with items:", menu.children.length);
+      } catch (error) {
+        console.error("[UPDATE] Error populating variable picker:", error);
+        // Fallback direct HTML insertion
+        try {
+          const fallbackHtml = `
+            <h6 class="dropdown-header text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-2">Input Variables</h6>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150" 
+               data-variable="{message_content}" onclick="insertVariableIntoPrompt('{message_content}'); return false;">
+              Message Content
+            </a>
+          `;
+          menu.innerHTML = fallbackHtml;
+          console.log("[UPDATE] Fallback HTML inserted");
+        } catch (fallbackError) {
+          console.error("[UPDATE] Even fallback failed:", fallbackError);
+        }
+      }
+    }
+    
+    // Toggle variable picker - Fixed to work with global jQuery implementation
+    function toggleVariablePicker(e) {
+      console.log("[VARIABLE] toggleVariablePicker called in settings.js");
+      
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      const menu = document.getElementById('variablePickerMenu');
+      const button = document.getElementById('variablePickerBtn');
+      
+      if (!menu || !button) {
+        console.error("[VARIABLE] Menu or button not found");
+        return;
+      }
+      
+      // Toggle menu visibility
+      if (menu.classList.contains('hidden')) {
+        // Get variables from StepManager directly
+        if (window.StepManager && typeof window.StepManager.getAvailableVariables === 'function') {
+          console.log("[VARIABLE] Getting variables from StepManager");
+          const variables = window.StepManager.getAvailableVariables();
+          populateVariableMenu(menu, variables);
+        } else {
+          console.log("[VARIABLE] StepManager not available, using fallback variables");
+          // Fallback variables if StepManager is not available
+          const fallbackVariables = [
+            { id: 'message_content', name: 'Message Content', category: 'Input' }
+          ];
+          populateVariableMenu(menu, fallbackVariables);
+        }
+        
+        // Position the menu correctly
+        positionVariableMenu(menu, button);
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
+    }
+    
+    // New helper function to populate the variable menu
+    function populateVariableMenu(menu, variables) {
+      // Clear existing content
+      menu.innerHTML = '';
+      
+      // Group variables by category
+      const categories = {};
+      variables.forEach(variable => {
+        if (!categories[variable.category]) {
+          categories[variable.category] = [];
+        }
+        categories[variable.category].push(variable);
+      });
+      
+      // Create menu items
+      Object.keys(categories).forEach((category, categoryIndex) => {
+        // Add category header
         const header = document.createElement('h6');
         header.className = 'dropdown-header text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-2';
         header.textContent = `${category} Variables`;
         menu.appendChild(header);
         
+        // Add variables in this category
         categories[category].forEach(variable => {
           const item = document.createElement('a');
           item.className = 'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150';
           item.href = '#';
-          item.dataset.variable = `{${variable.id}}`;
+          item.setAttribute('data-variable', `{${variable.id}}`);
           item.textContent = variable.name;
           
-          item.addEventListener('click', (e) => {
+          // Add click handler
+          item.addEventListener('click', function(e) {
             e.preventDefault();
-            insertVariableIntoPrompt(item.dataset.variable);
+            const variableText = this.getAttribute('data-variable');
+            console.log("[UPDATE] Selected:", variableText);
+            
+            // Handle insertion
+            insertVariableIntoPrompt(variableText);
+            
+            // Hide menu
             menu.classList.add('hidden');
           });
           
           menu.appendChild(item);
         });
         
-        if (Object.keys(categories).length > 1) {
-          const divider = document.createElement('div');
-          divider.className = 'border-t border-gray-200 my-1';
-          menu.appendChild(divider);
+        // Add separator if this isn't the last category
+        if (categoryIndex < Object.keys(categories).length - 1) {
+          const separator = document.createElement('div');
+          separator.className = 'border-t border-gray-200 my-1';
+          menu.appendChild(separator);
         }
       });
     }
     
-    // Toggle variable picker
-    function toggleVariablePicker(e) {
-      if (e) e.stopPropagation();
+    // New helper function to position the variable menu
+    function positionVariableMenu(menu, button) {
+      // Position the menu below the button
+      const buttonRect = button.getBoundingClientRect();
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
       
-      const menu = document.getElementById('variablePickerMenu');
-      if (!menu) return;
-      
-      menu.classList.toggle('hidden');
+      menu.style.top = (buttonRect.bottom + scrollTop) + 'px';
+      menu.style.left = buttonRect.left + 'px';
+      menu.style.width = '300px'; // Set appropriate width
+      menu.style.maxHeight = '300px'; // Limit height for scrolling
+      menu.style.overflowY = 'auto';
     }
     
-    // Insert variable into prompt
+    // Self-contained insertVariableIntoPrompt function
     function insertVariableIntoPrompt(variable) {
-      const textarea = document.getElementById('stepPrompt');
-      if (!textarea) return;
+      console.log("[VARIABLE] Inserting variable:", variable);
       
+      // Get the textarea element
+      const textarea = document.getElementById('stepPrompt');
+      if (!textarea) {
+        console.error("[VARIABLE] Textarea not found");
+        return;
+      }
+      
+      // Get current cursor position and text
       const cursorPos = textarea.selectionStart;
       const text = textarea.value;
+      
+      // Insert the variable at cursor position
       const newText = text.slice(0, cursorPos) + variable + text.slice(cursorPos);
       textarea.value = newText;
       textarea.focus();
       
-      // Mark as changed
-      state.hasUnsavedChanges = true;
+      // Set cursor position after the inserted variable
+      const newCursorPos = cursorPos + variable.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+      
+      // Mark as having unsaved changes
+      if (window.StepManager && typeof window.StepManager.markUnsavedChanges === 'function') {
+        window.StepManager.markUnsavedChanges();
+      }
     }
     
     // Handle step reorder
@@ -1410,6 +1678,18 @@ const SettingsModule = (function() {
         
         window.NotificationService.success('Default steps restored');
       });
+    }
+    
+    // Add global functions for cross-module access
+    function addGlobalFunctions() {
+      // Add global accessor for manual testing
+      window.showVariablePicker = function() {
+        console.log("[DEBUG] Manually showing variable picker");
+        toggleVariablePicker({
+          preventDefault: function() {},
+          stopPropagation: function() {}
+        });
+      };
     }
     
     // Register module

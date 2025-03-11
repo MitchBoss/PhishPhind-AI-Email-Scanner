@@ -132,8 +132,9 @@
     <!-- Email Input Section (Always Visible) -->
     <div class="mb-6">
       <h2 class="text-lg font-medium text-gray-900 mb-2">Upload Message File</h2>
+      <!-- File input placed outside the dropzone -->
+      <input type="file" id="messageFile" style="display: none;" />
       <div class="w-full border-2 border-gray-300 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-brand-purple transition-colors duration-200" id="dropzone">
-        <input type="file" class="hidden" id="messageFile" />
         <div class="flex flex-col items-center justify-center">
           <svg class="h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />

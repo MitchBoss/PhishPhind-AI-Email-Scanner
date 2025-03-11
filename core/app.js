@@ -61,7 +61,6 @@ window.PhishPhindApp = (function() {
         // Initialize UI components and event handlers
         registerAppEvents();
         initializeUI();
-        initDropzone();
         
         // Check for API configuration
         checkApiConfiguration();
@@ -135,19 +134,39 @@ window.PhishPhindApp = (function() {
     
     // Initialize file dropzone
     function initDropzone() {
+      // Use a static flag to prevent double initialization
+      if (initDropzone.initialized) {
+        console.log("[APP] Dropzone already initialized, skipping");
+        return;
+      }
+      
+      console.log("[APP] Initializing dropzone (first time)");
+      
       const dropzone = document.getElementById('dropzone');
       const fileInput = document.getElementById('messageFile');
       
-      if (!dropzone || !fileInput) return;
+      if (!dropzone || !fileInput) {
+        console.error("[APP] Dropzone or fileInput element not found");
+        return;
+      }
       
-      // Handle click on dropzone
-      dropzone.addEventListener('click', () => {
-        fileInput.click();
+      // Simple direct click handler - no event bubbling issues since input is outside dropzone
+      dropzone.addEventListener('click', function() {
+        console.log("[APP] Dropzone clicked, opening file dialog");
+        fileInput.click(); // Direct DOM API call
+      });
+      
+      // Handle file selection
+      fileInput.addEventListener('change', function(event) {
+        console.log("[APP] File input change event triggered");
+        if (event.target.files.length) {
+          handleFileSelected(event.target.files[0]);
+        }
       });
       
       // Handle drag events
       ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropzone.addEventListener(eventName, (e) => {
+        dropzone.addEventListener(eventName, function(e) {
           e.preventDefault();
           e.stopPropagation();
         }, false);
@@ -155,20 +174,21 @@ window.PhishPhindApp = (function() {
       
       // Handle dragenter and dragover
       ['dragenter', 'dragover'].forEach(eventName => {
-        dropzone.addEventListener(eventName, () => {
+        dropzone.addEventListener(eventName, function() {
           dropzone.classList.add('drag-over');
         }, false);
       });
       
       // Handle dragleave and drop
       ['dragleave', 'drop'].forEach(eventName => {
-        dropzone.addEventListener(eventName, () => {
+        dropzone.addEventListener(eventName, function() {
           dropzone.classList.remove('drag-over');
         }, false);
       });
       
       // Handle file drop
-      dropzone.addEventListener('drop', (e) => {
+      dropzone.addEventListener('drop', function(e) {
+        console.log("[APP] File dropped on dropzone");
         const dt = e.dataTransfer;
         const files = dt.files;
         
@@ -178,17 +198,21 @@ window.PhishPhindApp = (function() {
         }
       }, false);
       
-      // Handle file selection
-      fileInput.addEventListener('change', (event) => {
-        if (event.target.files.length) {
-          handleFileSelected(event.target.files[0]);
-        }
-      });
+      // Mark as initialized
+      initDropzone.initialized = true;
+      console.log("[APP] Dropzone initialization complete");
     }
     
     // Handle file selected (via drag or click)
     function handleFileSelected(file) {
+      console.log("[APP] handleFileSelected called with file:", file ? file.name : "none");
+      
       if (!file) return;
+      
+      // Prevent multiple file dialogs from appearing
+      const fileInput = document.getElementById('messageFile');
+      fileInput.value = ''; // Reset the file input to prevent change event from triggering again
+      console.log("[APP] Reset fileInput.value to prevent multiple dialogs");
       
       const reader = new FileReader();
       reader.onload = function(e) {
@@ -196,6 +220,7 @@ window.PhishPhindApp = (function() {
         if (window.NotificationService) {
           window.NotificationService.info('File loaded successfully');
         }
+        console.log("[APP] File read successfully and loaded into messageText");
       };
       reader.readAsText(file);
     }
