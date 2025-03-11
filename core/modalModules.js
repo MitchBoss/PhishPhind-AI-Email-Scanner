@@ -5,6 +5,8 @@
 window.ModalModules = (function() {
   const modals = new Map();
   let activeTabSizes = {};
+  let lastClickTime = 0;
+  const doubleClickThreshold = 300; // milliseconds
   
   // Initialize modal system
   function init() {
@@ -83,7 +85,44 @@ window.ModalModules = (function() {
       // Add close handlers
       modalElement.addEventListener('click', (e) => {
         if (e.target === modalElement) {
-          hideModal(moduleId);
+          const now = new Date().getTime();
+          
+          // For settings modal, require double-click to close
+          if (moduleId === 'settings') {
+            if (now - lastClickTime < doubleClickThreshold) {
+              // This is a double click, close the modal
+              hideModal(moduleId);
+              lastClickTime = 0; // Reset timer
+            } else {
+              // This is a first click, update timestamp and show a subtle hint
+              lastClickTime = now;
+              
+              // Show hint tooltip that disappears after a short time
+              const hint = document.createElement('div');
+              hint.className = 'tooltip-hint';
+              hint.style.position = 'absolute';
+              hint.style.left = e.clientX + 'px';
+              hint.style.top = e.clientY + 'px';
+              hint.style.background = 'rgba(0,0,0,0.7)';
+              hint.style.color = '#fff';
+              hint.style.padding = '5px 10px';
+              hint.style.borderRadius = '4px';
+              hint.style.fontSize = '12px';
+              hint.style.zIndex = '9999';
+              hint.textContent = 'Double-click to close';
+              document.body.appendChild(hint);
+              
+              // Remove hint after a delay
+              setTimeout(() => {
+                if (hint.parentNode) {
+                  hint.parentNode.removeChild(hint);
+                }
+              }, 1500);
+            }
+          } else {
+            // For other modals, single click is enough to close
+            hideModal(moduleId);
+          }
         }
       });
       

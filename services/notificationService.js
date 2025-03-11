@@ -33,46 +33,70 @@ const NotificationService = (function() {
     function show(message, type = 'info', title = '', duration = DEFAULT_DURATION) {
       // Create notification element
       const notification = document.createElement('div');
-      notification.className = `notification notification-${type} rounded shadow-lg`;
+      notification.className = `mb-4 rounded-md shadow-lg overflow-hidden flex flex-col bg-white`;
+      notification.style.animation = 'notification-slide-in 0.3s forwards';
       
-      // Add title if provided
+      // Add left border based on type
+      const leftBorderColor = type === 'success' ? '#4caf50' : 
+                             type === 'error' ? '#f44336' : 
+                             type === 'warning' ? '#ff9800' : '#2196f3';
+      
+      // Create content container
+      const contentWrapper = document.createElement('div');
+      contentWrapper.className = 'relative flex items-start p-0';
+      contentWrapper.style.borderLeft = `4px solid ${leftBorderColor}`;
+      
+      // Add accent bar at left
+      const accentBar = document.createElement('div');
+      accentBar.className = 'absolute left-0 top-0 bottom-0 w-1';
+      accentBar.style.backgroundColor = leftBorderColor;
+      contentWrapper.appendChild(accentBar);
+      
+      // Add content container
+      const content = document.createElement('div');
+      content.className = 'p-4 flex-grow';
+      
+      // Add title if provided, otherwise use type name
       if (title) {
         const titleElement = document.createElement('div');
-        titleElement.className = 'notification-title text-gray-800 font-semibold';
+        titleElement.className = 'text-lg font-medium text-gray-900 mb-1';
         titleElement.textContent = title;
-        notification.appendChild(titleElement);
+        content.appendChild(titleElement);
       }
       
       // Add message
       const messageElement = document.createElement('div');
-      messageElement.className = 'notification-message text-gray-600';
+      messageElement.className = 'text-sm text-gray-600';
       messageElement.textContent = message;
-      notification.appendChild(messageElement);
+      content.appendChild(messageElement);
       
-      // Add timer bar
-      const timerContainer = document.createElement('div');
-      timerContainer.className = 'notification-timer mt-2';
+      contentWrapper.appendChild(content);
+      notification.appendChild(contentWrapper);
       
-      const timerBar = document.createElement('div');
-      timerBar.className = 'notification-timer-progress';
-      timerContainer.appendChild(timerBar);
-      notification.appendChild(timerContainer);
+      // Add progress bar
+      const progressContainer = document.createElement('div');
+      progressContainer.className = 'h-1 bg-gray-200 w-full relative';
+      
+      const progressBar = document.createElement('div');
+      progressBar.className = 'absolute left-0 top-0 h-full';
+      progressBar.style.backgroundColor = leftBorderColor;
+      progressBar.style.width = '100%';
+      progressBar.style.transition = `width ${duration}ms linear`;
+      
+      progressContainer.appendChild(progressBar);
+      notification.appendChild(progressContainer);
       
       // Add notification to container
-      container.prepend(notification);
-      
-      // Animate timer
-      timerBar.style.width = '100%';
-      timerBar.style.transitionDuration = `${duration}ms`;
+      container.appendChild(notification);
       
       // Start animation after DOM update
       setTimeout(() => {
-        timerBar.style.width = '0%';
+        progressBar.style.width = '0%';
       }, 10);
       
       // Remove notification after duration
       const timeout = setTimeout(() => {
-        notification.style.animation = 'notificationFadeOut 0.3s forwards';
+        notification.style.animation = 'notification-slide-out 0.3s forwards';
         setTimeout(() => {
           if (notification.parentNode) {
             notification.parentNode.removeChild(notification);
@@ -83,13 +107,30 @@ const NotificationService = (function() {
       // Allow clicking to dismiss early
       notification.addEventListener('click', () => {
         clearTimeout(timeout);
-        notification.style.animation = 'notificationFadeOut 0.3s forwards';
+        notification.style.animation = 'notification-slide-out 0.3s forwards';
         setTimeout(() => {
           if (notification.parentNode) {
             notification.parentNode.removeChild(notification);
           }
         }, 300);
       });
+      
+      // Add animation styles if not already added
+      if (!document.getElementById('notification-animations')) {
+        const style = document.createElement('style');
+        style.id = 'notification-animations';
+        style.textContent = `
+          @keyframes notification-slide-in {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+          @keyframes notification-slide-out {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
       
       // Publish event if EventBus is available
       if (window.EventBus) {
@@ -152,21 +193,9 @@ const NotificationService = (function() {
         warning,
         info
       });
-    } else {
-      console.warn('Services not available, NotificationService not registered');
-      
-      // Still make it globally available
-      window.NotificationService = {
-        init,
-        show,
-        success,
-        error,
-        warning,
-        info
-      };
     }
     
-    // Return public API
+    // Return the public API
     return {
       init,
       show,
@@ -175,4 +204,4 @@ const NotificationService = (function() {
       warning,
       info
     };
-  })();
+})();
