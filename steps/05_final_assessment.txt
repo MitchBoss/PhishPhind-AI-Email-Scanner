@@ -29,27 +29,32 @@ content_analysis_output: " {content_analysis_output} "
 
 [Response]
 **Final Risk Assessment & Recommendations:**
-- **Overall Risk Level:** <Green/Yellow/Red Flag>
+
 - **Summary of Key Findings:**
+
   - **Sender & Header Analysis:**
     - <Bullet point summarizing an important indicator>
     - <any additional bullet points of any other notable indicators>
+
   - **Link & Attachment Analysis:**
     - <Bullet point summarizing an important indicator>
     - <any additional bullet points of any other notable indicators>
+
   - **Content Analysis:**
     - <Bullet point summarizing an important indicator>
     - <any additional bullet points of any other notable indicators>
-- **Final Assessment:** 
-  - **Final Assessment: 🟢 Green Flag - No malicious indicators found.** *or* **Final Assessment: 🟡 Yellow Flag - Some indicators found. Requires manual review.** *or* **Final Assessment: 🔴 Red Flag - Malicious indicators detected.**
+
+- **Final Assessment:** <font color="Green">**🟢 Green Flag - No malicious indicators found.** </font> *or* <font color="yellow">**🟡 Yellow Flag - Some indicators found. Requires manual review.**</font> *or* <font color="red">**🔴 Red Flag - Malicious indicators detected. PROCEED WITH CAUTION!!!** </font>
+
 - **Reasons:** <Detailed reasons supporting the final assessment>
+
 - **Actionable Recommendations:**  
   <Display recommendations here if applicable>
 
 [Response Summary]
-<Choose response based on assessment:
-**🟢 Green Flag - No malicious indicators found.**
+<Choose response based on assessment:>
+<font color="Green">**🟢 Green Flag - No malicious indicators found.** </font>
 OR
-**🟡 Yellow Flag - Some indicators found. Requires manual review.**
+<font color="yellow">**🟡 Yellow Flag - Some indicators found. Requires manual review.**</font>
 OR
-**🔴 Red Flag - Malicious indicators detected. PROCEED WITH CAUTION!!!**
+<font color="red">**🔴 Red Flag - Malicious indicators detected. PROCEED WITH CAUTION!!!** </font>
