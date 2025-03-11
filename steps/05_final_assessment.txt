@@ -47,4 +47,9 @@ content_analysis_output: " {content_analysis_output} "
   <Display recommendations here if applicable>
 
 [Response Summary]
-<**🟢 Green Flag - No malicious indicators found.**>  OR  <**🟡 Yellow Flag - Some indicators found. Requires manual review.**>  OR  <**🔴 Red Flag - Malicious indicators detected. PROCEED WITH CAUTION!!!**>
+<Choose response based on assessment:
+**🟢 Green Flag - No malicious indicators found.**
+OR
+**🟡 Yellow Flag - Some indicators found. Requires manual review.**
+OR
+**🔴 Red Flag - Malicious indicators detected. PROCEED WITH CAUTION!!!**
