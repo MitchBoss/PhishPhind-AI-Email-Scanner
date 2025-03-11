@@ -1,0 +1,35 @@
+[MENU_Name]
+Content Analysis
+
+[STEP_PROMPT]
+Using the outputs from `email_parsing_output`, `link_attachment_analysis_output`, and `sender_header_analysis_output`, analyze the overall purpose or intent of the original email (If email was forwarded, ignore this and assess the original email.). Evaluate:
+- The primary message or call-to-action of the email.
+- Whether the email’s stated purpose aligns with the sender's claimed identity, subject, and the characteristics of its embedded links and attachments.
+- Any discrepancies between the sender's identity (as determined from the headers, subject, and body) and the nature of the links/attachments.
+- Whether it makes contextual sense to receive this email from the sender (for example, if the sender's domain does not logically correspond with the email's subject or purpose).
+- Flag any ambiguous or suspicious cues that warrant manual review.
+- If the email has been forwarded, ignore this and just make assessment on the orgiginal email.
+
+email_parsing_output: " {email_parsing_output} "
+link_attachment_analysis_output: " {link_attachment_analysis_output} "
+sender_header_analysis_output: " {sender_header_analysis_output} "
+
+**Tasks:**
+- Identify the overall purpose or intent of the email based on the parsed content, sender/header analysis, and link/attachment analysis.
+- Evaluate if the email’s intent is consistent with the sender's claimed identity, subject, and the content of its links and attachments.
+- Analyze if it makes contextual sense to receive this email from the sender.
+- Highlight any discrepancies or suspicious cues.
+- Make an assessment if there are clear indicators or deception or recommend manual review if ambiguous indicators are found.
+
+[LLM_INSTRUCTIONS] Please provide your response enclosed EXACTLY within the following tags:
+
+[Response]
+**Content Analysis Results:**
+- **Email Purpose/Intent:** <Determined purpose or call-to-action of the email>
+- **Consistency Evaluation:** <Assessment of whether the email’s intent aligns with the sender's claimed identity, subject, and the nature of the links/attachments>
+- **Sender Relevance Check:** <Analysis of whether it makes contextual sense to receive this email from the sender.>
+- **Discrepancies/Suspicious Cues:** <List any identified discrepancies or suspicious elements>
+- **Manual Review Recommendation:**  <Make an assessment if it's very clear or indicate if manual review is recommended and why>
+
+[Response Summary]
+A brief summary: Summarize the overall intent of the email, its consistency with the parsing, sender/header, and link/attachment analyses, and the contextual relevance of the sender.

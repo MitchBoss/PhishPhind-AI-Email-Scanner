@@ -1,0 +1,30 @@
+[MENU_Name]
+Link & Attachment Analysis
+
+[STEP_PROMPT]
+Using the attachments and embedded URLs from `message_content`, analyze the links and attachments for phishing indicators. Focus on:
+- Listing all detected URLs along with their visible text.
+- Attempting to decode encoded or obfuscated URLs to reveal their real destination. If decoding fails, retain the original URL.
+- Listing attachments with file names and file types.
+- Recommending manual verification for any uncertain or suspicious links or attachments.
+
+message_content: " {message_content} "
+
+**Tasks:**
+- List all detected URLs with their visible text.
+- List the full URLs. If for example it's clear that the link will forward to another url such as outlook safelinks protection, output the forwarded URL.
+- List all attachments with file names and types.
+- Recommend manual verification if any links or attachments appear suspicious.
+
+[LLM_INSTRUCTIONS] Please provide your response enclosed EXACTLY within the following tags:
+
+[Response]
+**Link & Attachment Analysis Results:**
+- **Detected URLs:**
+  - URL 1: <Decoded destination URL>
+  - (Include additional URLs as necessary)
+- **Attachments:** <List all attachments with file names and types>
+- **Manual Verification Note:** <Recommendation for manual verification of uncertain links/attachments>
+
+[Response Summary]
+A brief summary: Provide a one-sentence evaluation of the detected links and attachments, including any decoded destinations.

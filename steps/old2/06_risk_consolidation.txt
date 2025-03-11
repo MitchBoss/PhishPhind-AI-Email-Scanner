@@ -39,4 +39,4 @@ Please provide your response enclosed EXACTLY within the following tags:
 - **Overall Risk Level:** <High/Medium/Low>
 
 [Response Summary]
-A brief summary: Provide a one-sentence overall risk assessment based on the consolidated objective findings.
+A brief summary: Provide a one-sentence overall risk assessment based on the consolidated objective findings. 

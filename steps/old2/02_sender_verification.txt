@@ -26,4 +26,4 @@ Please provide your response enclosed EXACTLY within the following tags:
 - **Manual Check Note:** <E.g., "Recommend manual verification of WHOIS if uncertainty exists.">
 
 [Response Summary]
-A brief summary: Provide a one-sentence evaluation of the sender's legitimacy based solely on the available header data.
+A brief summary: Provide a one-sentence evaluation of the sender's legitimacy based solely on the available header data. 

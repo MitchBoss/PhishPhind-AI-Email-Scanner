@@ -1,0 +1,50 @@
+[MENU_Name]
+Final Risk Assessment & Recommendations
+
+[STEP_PROMPT]
+Using the outputs from `email_parsing_output`, `sender_header_analysis_output`, `link_attachment_analysis_output`, and `content_analysis_output`, consolidate the findings to determine the overall risk of the email. Focus on:
+- Summarizing key findings and objective indicators from each of the previous analysis steps (Sender & Header Analysis, Link & Attachment Analysis, and Content Analysis).
+- Highlighting any significant discrepancies, anomalies, or red flags.
+- Assessing the overall risk level based on the totality of the findings.
+- Outputting one of the following final assessments with reasons:
+  - **Final Assessment: 🟢 Green Flag - No malicious indicators found.**
+  - **Final Assessment: 🟡 Yellow Flag - Some indicators found. Requires manual review.**
+  - **Final Assessment: 🔴 Red Flag - Malicious indicators detected.**
+- Providing clear, actionable recommendations for further manual verification or safe handling if applicable.
+
+email_parsing_output: " {email_parsing_output} "
+sender_header_analysis_output: " {sender_header_analysis_output} "
+link_attachment_analysis_output: " {link_attachment_analysis_output} "
+content_analysis_output: " {content_analysis_output} "
+
+**Tasks:**
+- Aggregate and summarize the key findings from the Sender & Header Analysis, Link & Attachment Analysis, and Content Analysis steps.
+- For each of these three steps, provide a heading section and list bullet points summarizing important indicators.
+- Identify any objective red flags or discrepancies.
+- Assign an overall risk level.
+- Provide actionable recommendations only if there are actual recommendations based on the findings.
+- Output the final assessment in the specified format along with detailed reasons.
+
+[LLM_INSTRUCTIONS] Please provide your response enclosed EXACTLY within the following tags:
+
+[Response]
+**Final Risk Assessment & Recommendations:**
+- **Overall Risk Level:** <Green/Yellow/Red Flag>
+- **Summary of Key Findings:**
+  - **Sender & Header Analysis:**
+    - <Bullet point summarizing an important indicator>
+    - <any additional bullet points of any other notable indicators>
+  - **Link & Attachment Analysis:**
+    - <Bullet point summarizing an important indicator>
+    - <any additional bullet points of any other notable indicators>
+  - **Content Analysis:**
+    - <Bullet point summarizing an important indicator>
+    - <any additional bullet points of any other notable indicators>
+- **Final Assessment:** 
+  - **Final Assessment: 🟢 Green Flag - No malicious indicators found.** *or* **Final Assessment: 🟡 Yellow Flag - Some indicators found. Requires manual review.** *or* **Final Assessment: 🔴 Red Flag - Malicious indicators detected.**
+- **Reasons:** <Detailed reasons supporting the final assessment>
+- **Actionable Recommendations:**  
+  <Display recommendations here if applicable>
+
+[Response Summary]
+<**🟢 Green Flag - No malicious indicators found.**>  OR  <**🟡 Yellow Flag - Some indicators found. Requires manual review.**>  OR  <**🔴 Red Flag - Malicious indicators detected. PROCEED WITH CAUTION!!!**>

@@ -25,7 +25,7 @@ const ApiService = (function() {
       try {
         // Create an AbortController for timeout
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60-second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 90000); // 90-second timeout
         
         console.log(`Calling OpenAI API with model: ${model}, prompt length: ${prompt.length} chars`);
         const response = await fetch(url, {

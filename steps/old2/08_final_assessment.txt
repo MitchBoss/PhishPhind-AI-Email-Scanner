@@ -34,4 +34,4 @@ Please provide your response enclosed EXACTLY within the following tags:
   <Incorporate the actionable recommendations from the previous step output here>
 
 [Response Summary]
-A brief summary: Provide a one-sentence overall assessment based on the objective analysis and include the recommended next steps.
+A brief summary: Provide a one-sentence overall assessment based on the objective analysis and include the recommended next steps. 
