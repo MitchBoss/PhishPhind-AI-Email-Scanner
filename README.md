@@ -66,7 +66,20 @@ The application iterates through these steps sequentially, feeding the output of
 
 ## Running PhishPhind
 
-As a **static web application**, no installation is required; simply open the `index.html` file in a web browser.
+Although PhishPhind is a static web application, it must be served from a web server to function properly. Due to CORS (Cross-Origin Resource Sharing) restrictions, opening the `index.html` file directly in a browser will cause API requests to fail.
+
+You can run PhishPhind using one of these methods:
+
+1. **Local Web Server**: Use a simple HTTP server such as:
+   - Python's built-in server: `python -m http.server`
+   
+2. **Deployment**: Host on any static file hosting service like:
+   - GitHub Pages
+   - Netlify
+   - Vercel
+   - AWS S3 with static website hosting
+
+Once your server is running, access the application through the URL provided by your chosen method (e.g., `http://localhost:8000` or your deployment URL).
 
 ## Configuration
 
