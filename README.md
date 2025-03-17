@@ -2,6 +2,8 @@
 
 PhishPhind was created as a proof of concept of an easy-to-use interface for multi-step LLM prompting, using specific outputs from previous prompts in an intuitive user interface. While the specific implementation focuses on phishing email detection, the core architecture serves as a reusable foundation for any sequential LLM prompting workflow.
 
+**Demo:** [mailscan.xpulse.dev](https://mailscan.xpulse.dev)
+
 **Disclaimer:** The phishing detection implementation is a demonstration and I make no claims of its reliability or the accuracy of results in its current state. It should not be relied upon for real-world security analysis.
 
 PhishPhind is a **static web application** that demonstrates how large language models can be chained together in a step-by-step workflow, with each step building upon the results of previous steps. The current implementation applies this architecture to email analysis, but the underlying framework can be adapted for various use cases requiring sequential LLM processing.
