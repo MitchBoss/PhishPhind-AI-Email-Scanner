@@ -1,12 +1,10 @@
 // Only load analytics if the NEW_RELIC_SCRIPT environment variable is set
-// Ensure the environment variable exists before trying to execute it
-if (typeof NEW_RELIC_SCRIPT !== "undefined" && NEW_RELIC_SCRIPT) {
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.innerHTML = NEW_RELIC_SCRIPT; // Execute the script dynamically
-    document.head.appendChild(script);
-    console.log("New Relic analytics script loaded from Cloudflare Pages environment variable.");
-  } else {
-    console.log("No New Relic script found. Running without analytics.");
-  }
-  
+// Check if the environment variable has content (after replacement).
+if (newRelicCode && newRelicCode.trim().length > 0) {
+  // Execute the New Relic code directly.
+  // Using the Function constructor to safely evaluate the code.
+  new Function(newRelicCode)();
+  console.log("New Relic analytics script executed from environment variable.");
+} else {
+  console.log("No New Relic script found. Running without analytics.");
+}
