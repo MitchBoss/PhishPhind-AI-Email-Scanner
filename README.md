@@ -2,7 +2,7 @@
 
 PhishPhind was created as a proof of concept of an easy-to-use interface for multi-step LLM prompting, using specific outputs from previous prompts in an intuitive user interface. While the specific implementation focuses on phishing email detection, the core architecture serves as a reusable foundation for any sequential LLM prompting workflow.
 
-**Demo:** [mailscan.xpulse.dev](https://mailscan.xpulse.dev)
+**Demo URL:** [mailscan.xpulse.dev](https://mailscan.xpulse.dev)
 
 **Disclaimer:** The phishing detection implementation is a demonstration and I make no claims of its reliability or the accuracy of results in its current state. It should not be relied upon for real-world security analysis.
 
@@ -222,3 +222,9 @@ This code is provided as-is, with no guarantees or restrictions. Use it however 
 ## Author
 
 *   **MitchBoss** - [GitHub Profile](https://github.com/MitchBoss)
+
+## Analytics & Monitoring
+
+**No analytics or monitoring are loaded on cloned versions of this repository.**
+
+I use New Relic monitoring for development purposes on my own instance of PhishPhind. The script only loads if the NEW_RELIC_SCRIPT environment variable is found on deployment. If it's not found, no analytics script is loaded.
