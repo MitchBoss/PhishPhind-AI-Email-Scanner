@@ -6,7 +6,7 @@ PhishPhind was created as a proof of concept of an easy-to-use interface for mul
 
 **Disclaimer:** The phishing detection implementation is a demonstration and I make no claims of its reliability or the accuracy of results in its current state. It should not be relied upon for real-world security analysis.
 
-PhishPhind is a **static web application** that demonstrates how large language models can be chained together in a step-by-step workflow, with each step building upon the results of previous steps. The current implementation applies this architecture to email analysis, but the underlying framework can be adapted for various use cases requiring sequential LLM processing.
+PhishPhind is a **static web application** that detects and analyzes potential phishing emails using a sequential chain of LLM prompts. Each analysis step builds upon results from previous steps in an attempt to provide comprehensive threat assessment. While focused on email security, this underlying architecture can be adapted for any workflow requiring sequential LLM processing.
 
 ## Core Architecture
 
