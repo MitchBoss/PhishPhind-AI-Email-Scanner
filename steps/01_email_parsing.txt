@@ -2,24 +2,31 @@
 Email Parsing
 
 [STEP_PROMPT]
+Using the full raw email provided as `message_content`, identify if the email is forwarded. Look for forwarding indicators such as:
+- “Fwd:” or “FW:” in the subject line,
+- “Forwarded message” text in the headers or body,
+- Additional “From/Date/Subject/To” lines in the body that indicate a forwarded chain.
 
-Extract the information 
+If the email is forwarded:
+1. Locate the earliest/original email within the chain. (This is typically the last “-----Original Message-----” or similar block in the chain.)
+2. Extract the components (headers, subject, from details, body, attachments, and embedded URLs) **only from that earliest/original email**.
+3. Ignore or exclude any wrapper content added by the forwarder (e.g., the forwarder’s notes or signature).
 
-Using the full raw email provided as message_content, extract the following components from the original email. If the email is forwarded, detect and isolate the original email by identifying forwarded message delimiters (e.g., "Fwd:", "Forwarded message:", "-----Original Message-----") and ignore any additional wrapper content or headers added by forwarding. Extract only the components from the earliest, original email.
-- **Email Headers:** Extract the headers of the original email, including sender IP, metadata, routing information, and all header fields. If the email is forwarded, extract original email headers and ignore any additional headers added by forwarding.
-- **Subject:** Extract the subject of the original email, omitting any forwarded indicators (e.g., "Fwd:" or similar).
-- **From Details:** Extract the From Name, sender email address, and the Reply-To address from the original email.
-- **Message Body:** Extract both the plain text and HTML versions of the original email only, excluding any content added by forwarding.
-- **Attachments:** List all attachments from the original email with file names and file types.
-- **Embedded URLs:** Extract any URLs embedded within the original email.
+If the email is not forwarded:
+- Proceed normally, extracting the components from the single email.
+
+**Extract the following components from the original email** (the earliest one, if forwarded):
+- **Email Headers:** Include sender IP, metadata, routing information, and all header fields from the original email only.
+- **Subject:** The subject of the original email, omitting any “Fwd:” or “FW:” or similar forwarding text.
+- **From Details:** From Name, sender email address, and Reply-To address from the original email only.
+- **Message Body:** Plain text and HTML versions of the original email only, excluding any forwarding notes or appended text from the forwarder.
+- **Attachments:** All attachments from the original email only.
+- **Embedded URLs:** Any URLs within the original email only.
 
 **Tasks:**
-- Extract and list the original email headers.
-- Extract the subject of the original email.
-- Identify and extract the From Name, sender email address, and Reply-To address from the original email.
-- Extract the plain text version of the original email.
-- Identify and list attachments with file names and file types from the original email.
-- Extract any embedded URLs from the original email.
+- Identify if it is a forwarded email and locate the earliest email in the chain.
+- Extract the original email headers, subject, from details, message body, attachments, and embedded URLs.
+- Omit any forwarder’s notes, signature, or subject line additions.
 
 message_content: " {message_content} "
 
@@ -28,9 +35,9 @@ message_content: " {message_content} "
 [Response]
 **Email Parsing Results:**
 
-- **Headers:** <Extracted original email headers including sender IP, metadata, and routing details if avaliable.>
+- **Headers:** <Extracted original email headers including sender IP, metadata, and routing details>
 
-- **Subject:** <Extracted subject of the original email. If the email is forwarded, extract the original subject.>
+- **Subject:** <Extracted subject of the original email>
 
 - **From Details:**  
   - **From Name:** <Extracted From Name>  

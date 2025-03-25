@@ -2,19 +2,19 @@
 Link & Attachment Analysis
 
 [STEP_PROMPT]
-Using the attachments and embedded URLs from `message_content`, analyze the links and attachments for phishing indicators. Focus on:
-- Listing all detected URLs along with their visible text.
-- Attempting to decode encoded or obfuscated URLs to reveal their real destination. If decoding fails, retain the original URL.
-- Listing attachments with file names and file types.
-- Recommending manual verification for any uncertain or suspicious links or attachments.
+Using the original email’s attachments and embedded URLs (from `email_parsing_output`), analyze for phishing indicators:
+- List each detected URL and its visible text (if available).
+- Attempt to decode or resolve short/obfuscated URLs; if uncertain, keep the original.
+- List all attachments from the original email, ignoring any that appear in forwarder’s notes.
+- Recommend manual verification if links or attachments are suspicious.
 
 message_content: " {message_content} "
 
 **Tasks:**
-- List all detected URLs with their visible text.
-- List the full URLs. If for example it's clear that the link will forward to another url such as outlook safelinks protection, output the forwarded URL.
-- List all attachments with file names and types.
-- Recommend manual verification if any links or attachments appear suspicious.
+1. Identify and list all URLs from the original email (earliest in the chain).
+2. If a URL uses a redirect or shortener, attempt to decode. If uncertain, retain the original.
+3. List all attachments with file names and types from the original email only.
+4. Recommend manual verification for suspicious or unknown links/attachments.
 
 [LLM_INSTRUCTIONS] Please provide your response enclosed EXACTLY within the following tags:
 
@@ -23,7 +23,7 @@ message_content: " {message_content} "
 - **Detected URLs:**
   - URL 1: <Decoded destination URL>
   - (Include additional URLs as necessary)
-- **Attachments:** <List all attachments with file names and types>
+- **Attachments:** <List all attachments with file names and types from the original email>
 - **Manual Verification Note:** <Recommendation for manual verification of uncertain links/attachments>
 
 [Response Summary]

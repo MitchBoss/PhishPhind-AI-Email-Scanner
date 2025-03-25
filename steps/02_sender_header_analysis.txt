@@ -2,31 +2,27 @@
 Sender & Header Analysis
 
 [STEP_PROMPT]
-Using the output from email_parsing_output, analyze the sender's details and email header information from the original email. If the email is forwarded, ensure that only the original, earliest email's headers and content are used for analysis, and ignore any additional headers or forwarding artifacts. Analyze the email body and subject to determine the claimed identity. Focus on:
-- Extracting the sender's email address, domain, and the display name (i.e., who the sender is purporting to be from the original headers).
-- Extracting the subject of the original email.
-- Analyzing the email body and subject to identify any claims regarding the sender's identity.
-- Verifying if the claimed identity in the email body and subject matches the header details.
-- Checking SPF/DKIM verification results (if available). If the headers do not include SPF/DKIM information, output "Not Applicable" (this does not necessarily indicate a failure).
-- Identifying discrepancies or anomalies (e.g., misspellings, domain mismatches, free email service usage, or mismatches between the header and body/subject claimed identity).
-- Recommending manual verification (e.g., WHOIS lookup) if necessary.
+Using the output from `email_parsing_output`, analyze only the **original email** (earliest in any forwarded chain).  
+- Focus on the sender's details (email address, domain, display name) from the original headers.
+- Extract the subject of the original email.
+- Analyze the email body and subject to identify the claimed identity (e.g., “Facebook Team,” “NGOs1,” etc.).
+- Verify if the claimed identity in the body/subject matches the header details.
+- Check SPF/DKIM results if available; otherwise, output "Not Applicable."
+- Identify discrepancies (domain mismatches, free email service usage, or mismatches between the header and body/subject identity).
+- Recommend manual verification if suspicious.
 
 email_parsing_output: " {email_parsing_output} "
 
 **Tasks:**
-- List the sender's email address, domain, and display name as extracted from the original email headers.
-- Extract the subject from the original email.
-- Analyze and extract the claimed identity from the email body and subject and from name.
-- Report SPF/DKIM verification results, outputting "Not Applicable" if no SPF/DKIM information is present.
-- Compare the claimed identity from the email body, from address and subject with the header information and indicate whether there are any discrepancies that indicate the from address doesn't match the claimed identity.
-- Note any discrepancies or anomalies.
-- Indicate if a free email service is used.
-- Recommend if this is likely to be phishing or if manual verification if needed.
+1. List the sender’s email address, domain, and display name from the original email headers (ignoring any forwarder’s info).
+2. Extract the original subject from the original email.
+3. Identify the claimed identity in the body/subject and compare it with the From/Reply-To addresses.
+4. Report SPF/DKIM if available; otherwise, "Not Applicable."
+5. Note discrepancies or anomalies that suggest potential phishing.
+6. Indicate if the domain is a free email service.
+7. Provide a recommendation regarding phishing suspicion or the need for manual checks.
 
 [LLM_INSTRUCTIONS] Please provide your response enclosed EXACTLY within the following tags:
-
-[Response]
-Please provide your response enclosed EXACTLY within the following tags:
 
 [Response]
 **Sender & Header Analysis Results:**
@@ -35,18 +31,11 @@ Please provide your response enclosed EXACTLY within the following tags:
 - **Display Name (Claimed Identity from Headers):** <Extracted display name or purporting identity from headers>
 - **Original Subject:** <Extracted subject of the original email>
 - **Body/Subject Claimed Identity:** <Extracted claimed identity from the email body and subject>
-- **Identity Match Check:** <Indicate if the claimed identity from the headers matches the identity claimed in the email body/subject as well as the from email address. >
+- **Identity Match Check:** <Indicate if the claimed identity from the headers matches the identity claimed in the email body/subject>
 - **SPF/DKIM Verification:** <Results of SPF/DKIM checks or "Not Applicable">
-- **Discrepancies/Anomalies:** <List any observed discrepancies or anomalies, including mismatches between header and body/subject claimed identity or other indicators of deception>
+- **Discrepancies/Anomalies:** <List any observed discrepancies or anomalies>
 - **Free Email Service:** <Yes/No>
-- **Manual Verification Note:** <Recommendation for manual checks if necessary. Indicate if likely to be phishing>
-
-[LLM_INSTRUCTIONS] Please provide your response enclosed EXACTLY within the following tags:
-
-[Response Summary]
-A brief summary: Provide a one-sentence evaluation of the sender's authenticity and identity consistency based on the original email header, subject, and body analysis.
-
-[LLM_INSTRUCTIONS] Please provide your response enclosed EXACTLY within the following tags:
+- **Manual Verification Note:** <Recommendation for manual checks if necessary; indicate if likely phishing>
 
 [Response Summary]
 A brief summary: Provide a one-sentence evaluation of the sender's authenticity and identity consistency based on the original email header, subject, and body analysis.
