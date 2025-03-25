@@ -2,7 +2,10 @@
 Email Parsing
 
 [STEP_PROMPT]
-Using the full raw email provided as `message_content`, extract the following components from the original email (if the email was forwarded from someone else, ignore this and make all assessments on the first, original email):
+
+Extract the information 
+
+Using the full raw email provided as message_content, extract the following components from the original email. If the email is forwarded, detect and isolate the original email by identifying forwarded message delimiters (e.g., "Fwd:", "Forwarded message:", "-----Original Message-----") and ignore any additional wrapper content or headers added by forwarding. Extract only the components from the earliest, original email.
 - **Email Headers:** Extract the headers of the original email, including sender IP, metadata, routing information, and all header fields. If the email is forwarded, extract original email headers and ignore any additional headers added by forwarding.
 - **Subject:** Extract the subject of the original email, omitting any forwarded indicators (e.g., "Fwd:" or similar).
 - **From Details:** Extract the From Name, sender email address, and the Reply-To address from the original email.
@@ -25,9 +28,9 @@ message_content: " {message_content} "
 [Response]
 **Email Parsing Results:**
 
-- **Headers:** <Extracted original email headers including sender IP, metadata, and routing details>
+- **Headers:** <Extracted original email headers including sender IP, metadata, and routing details if avaliable.>
 
-- **Subject:** <Extracted subject of the original email>
+- **Subject:** <Extracted subject of the original email. If the email is forwarded, extract the original subject.>
 
 - **From Details:**  
   - **From Name:** <Extracted From Name>  

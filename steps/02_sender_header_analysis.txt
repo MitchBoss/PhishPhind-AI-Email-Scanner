@@ -2,7 +2,7 @@
 Sender & Header Analysis
 
 [STEP_PROMPT]
-Using the output from `email_parsing_output`, analyze the sender's details and email header information from the original email (if the email is forwarded, use only the original email's headers), and also analyze the email body and subject to determine the claimed identity. Focus on:
+Using the output from email_parsing_output, analyze the sender's details and email header information from the original email. If the email is forwarded, ensure that only the original, earliest email's headers and content are used for analysis, and ignore any additional headers or forwarding artifacts. Analyze the email body and subject to determine the claimed identity. Focus on:
 - Extracting the sender's email address, domain, and the display name (i.e., who the sender is purporting to be from the original headers).
 - Extracting the subject of the original email.
 - Analyzing the email body and subject to identify any claims regarding the sender's identity.

@@ -2,7 +2,7 @@
 Content Analysis
 
 [STEP_PROMPT]
-Using the outputs from `email_parsing_output`, `link_attachment_analysis_output`, and `sender_header_analysis_output`, analyze the overall purpose or intent of the original email (If email was forwarded, ignore this and assess the original email.). Evaluate:
+Using the outputs from email_parsing_output, link_attachment_analysis_output, and sender_header_analysis_output, analyze the overall purpose or intent of the original email. If the email is forwarded, ignore any additional forwarded content and assess only the original email. In cases of multiple forwarded emails, ensure that only the original, earliest email is used for assessment. Evaluate:
 - The primary message or call-to-action of the email.
 - Whether the email’s stated purpose aligns with the sender's claimed identity, subject, and the characteristics of its embedded links and attachments.
 - Any discrepancies between the sender's identity (as determined from the headers, subject, and body) and the nature of the links/attachments.
