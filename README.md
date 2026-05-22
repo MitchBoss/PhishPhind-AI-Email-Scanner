@@ -87,7 +87,7 @@ Once your server is running, access the application through the URL provided by 
 
 The application relies on the following configuration files:
 
--   `config/models.json`: Defines the available LLM models for analysis.
+-   `config/models.json`: Defines the available OpenAI models for analysis. The default list includes current GPT-5.x models that use OpenAI's Responses API, plus GPT-4.1/GPT-4o fallbacks that use Chat Completions.
 -   `config/steps.json`: Configures the workflow steps for processing.
 
 These files can be customized via the settings modal within the application.

@@ -21,7 +21,7 @@ const ConfigManager = (function() {
       const stepsConfigStr = localStorage.getItem("steps_config");
       const modelsConfigStr = localStorage.getItem("models_config");
   
-      let apiConfig = configStr ? JSON.parse(configStr) : { apiKey: "", model: "" };
+      let apiConfig = configStr ? JSON.parse(configStr) : { apiKey: "", model: "gpt-5.4-mini" };
       let stepsConfig = stepsConfigStr ? JSON.parse(stepsConfigStr) : null;
       let modelsConfig = modelsConfigStr ? JSON.parse(modelsConfigStr) : null;
   
@@ -63,6 +63,13 @@ const ConfigManager = (function() {
       return { stepsJson, modelsJson };
     }
     
+    function mergeDefaultModels(defaultModels, storedModels = []) {
+      const defaults = Array.isArray(defaultModels) ? defaultModels : [];
+      const stored = Array.isArray(storedModels) ? storedModels : [];
+      const defaultIds = new Set(defaults.map(model => model.id));
+      return [...defaults, ...stored.filter(model => model?.id && !defaultIds.has(model.id))];
+    }
+
     /* Initialize configurations */
     async function initialize() {
       try {
@@ -70,7 +77,10 @@ const ConfigManager = (function() {
         const { apiConfig, stepsConfig, modelsConfig } = loadSettings();
         
         STEPS = stepsConfig || defaultSteps;
-        MODELS = modelsConfig || defaultModels;
+        MODELS = mergeDefaultModels(defaultModels, modelsConfig || defaultModels);
+        if (!MODELS.some(model => model.id === apiConfig.model)) {
+          apiConfig.model = "gpt-5.4-mini";
+        }
         
         return {
           models: MODELS,

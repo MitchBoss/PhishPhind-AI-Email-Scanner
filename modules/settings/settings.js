@@ -151,7 +151,7 @@ const SettingsModule = (function() {
               <div class="mb-4">
                 <label for="modelSelect" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
                 <select id="modelSelect" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
-                  ${state.models.map(model => `<option value="${model.id}">${model.name}</option>`).join('')}
+                  ${state.models.map(model => `<option value="${model.id}">${model.displayName || model.name || model.id}</option>`).join('')}
                 </select>
               </div>
             `
@@ -635,7 +635,7 @@ const SettingsModule = (function() {
       state.models.forEach(model => {
         const option = document.createElement('option');
         option.value = model.id;
-        option.textContent = model.name;
+        option.textContent = model.displayName || model.name || model.id;
         modelSelect.appendChild(option);
       });
       

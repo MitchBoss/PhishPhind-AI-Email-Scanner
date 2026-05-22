@@ -7,24 +7,57 @@ window.ConfigService = (function() {
     const DEFAULT_CONFIG = {
       api: {
         apiKey: '',
-        model: 'gpt-4o'
+        model: 'gpt-5.4-mini'
       },
       steps: [],
       models: [
         {
-          "id": "gpt-4o",
-          "displayName": "GPT-4o",
-          "provider": "OpenAI"
+          "id": "gpt-5.5",
+          "displayName": "GPT-5.5",
+          "provider": "OpenAI",
+          "api": "responses"
         },
         {
-          "id": "gpt-3.5-turbo",
-          "displayName": "GPT-3.5 Turbo",
-          "provider": "OpenAI"
+          "id": "gpt-5.4",
+          "displayName": "GPT-5.4",
+          "provider": "OpenAI",
+          "api": "responses"
+        },
+        {
+          "id": "gpt-5.4-mini",
+          "displayName": "GPT-5.4 Mini",
+          "provider": "OpenAI",
+          "api": "responses"
+        },
+        {
+          "id": "gpt-4.1",
+          "displayName": "GPT-4.1",
+          "provider": "OpenAI",
+          "api": "chat_completions"
+        },
+        {
+          "id": "gpt-4.1-mini",
+          "displayName": "GPT-4.1 Mini",
+          "provider": "OpenAI",
+          "api": "chat_completions"
+        },
+        {
+          "id": "gpt-4.1-nano",
+          "displayName": "GPT-4.1 Nano",
+          "provider": "OpenAI",
+          "api": "chat_completions"
         },
         {
           "id": "gpt-4o",
           "displayName": "GPT-4o",
-          "provider": "OpenAI"
+          "provider": "OpenAI",
+          "api": "chat_completions"
+        },
+        {
+          "id": "gpt-4o-mini",
+          "displayName": "GPT-4o Mini",
+          "provider": "OpenAI",
+          "api": "chat_completions"
         }
       ]
     };
@@ -79,10 +112,17 @@ window.ConfigService = (function() {
       const modelsConfigStr = localStorage.getItem('models_config');
       if (modelsConfigStr) {
         try {
-          config.models = JSON.parse(modelsConfigStr);
+          config.models = mergeDefaultModels(JSON.parse(modelsConfigStr));
         } catch (error) {
           console.error('Error parsing models config:', error);
+          config.models = mergeDefaultModels(config.models);
         }
+      } else {
+        config.models = mergeDefaultModels(config.models);
+      }
+
+      if (!config.models.some(model => model.id === config.api.model)) {
+        config.api.model = DEFAULT_CONFIG.api.model;
       }
       
       // Steps Config
@@ -96,6 +136,20 @@ window.ConfigService = (function() {
       }
     }
     
+    /**
+     * Ensure stored model lists receive newly shipped defaults while preserving
+     * user-defined/custom models that are not part of the default list.
+     * @param {array} storedModels - Models loaded from storage or defaults
+     * @returns {array} - Merged model list
+     */
+    function mergeDefaultModels(storedModels = []) {
+      const customModels = Array.isArray(storedModels) ? storedModels : [];
+      const defaultIds = new Set(DEFAULT_CONFIG.models.map(model => model.id));
+      const customOnlyModels = customModels.filter(model => model?.id && !defaultIds.has(model.id));
+
+      return [...DEFAULT_CONFIG.models, ...customOnlyModels];
+    }
+
     /**
      * Save configuration to persistent storage
      */

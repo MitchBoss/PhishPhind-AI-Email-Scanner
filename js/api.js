@@ -3,11 +3,13 @@
 const ApiService = (function() {
     /* Call OpenAI API */
     async function callOpenAI(prompt, apiKey, model) {
-      const url = "https://api.openai.com/v1/chat/completions";
-      const body = {
-        model: model,
-        messages: [{ role: "user", content: prompt }]
-      };
+      const usesResponsesApi = typeof model === 'string' && model.startsWith('gpt-5');
+      const url = usesResponsesApi
+        ? "https://api.openai.com/v1/responses"
+        : "https://api.openai.com/v1/chat/completions";
+      const body = usesResponsesApi
+        ? { model, input: prompt }
+        : { model, messages: [{ role: "user", content: prompt }] };
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`
@@ -26,7 +28,21 @@ const ApiService = (function() {
         }
         
         const data = await response.json();
-        return data.choices[0].message.content;
+        if (typeof data?.output_text === 'string') {
+          return data.output_text;
+        }
+        if (typeof data?.choices?.[0]?.message?.content === 'string') {
+          return data.choices[0].message.content;
+        }
+        if (Array.isArray(data?.output)) {
+          const outputText = data.output
+            .flatMap(item => Array.isArray(item?.content) ? item.content : [item])
+            .map(part => part?.text || part?.content || '')
+            .join('')
+            .trim();
+          if (outputText) return outputText;
+        }
+        throw new Error("OpenAI API response did not include readable text output");
       } catch (error) {
         console.error("API call failed:", error);
         throw error;

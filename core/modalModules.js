@@ -251,6 +251,7 @@ window.ModalModules = (function() {
     const saveSettingsBtn = modalElement.querySelector('#saveSettingsBtn');
     const apiKeyInput = modalElement.querySelector('#apiKeyInput');
     const modelSelect = modalElement.querySelector('#modelSelect');
+    populateModelSelect(modalElement);
     
     if (saveSettingsBtn && apiKeyInput && modelSelect) {
       saveSettingsBtn.addEventListener('click', function() {
@@ -460,6 +461,34 @@ window.ModalModules = (function() {
     }
   }
   
+  /**
+   * Populate any model dropdown in the modal from ConfigService.
+   * Static HTML options are only a fallback; ConfigService is the source of truth.
+   * @param {HTMLElement} modalElement - Modal element
+   */
+  function populateModelSelect(modalElement) {
+    const modelSelect = modalElement.querySelector('#modelSelect');
+    if (!modelSelect || !window.ConfigService) return;
+
+    const models = window.ConfigService.getModels();
+    if (!Array.isArray(models) || models.length === 0) return;
+
+    const selectedModel = window.ConfigService.getApiConfig()?.model || modelSelect.value;
+    modelSelect.innerHTML = '';
+
+    models.forEach(model => {
+      if (!model?.id) return;
+      const option = document.createElement('option');
+      option.value = model.id;
+      option.textContent = model.displayName || model.name || model.id;
+      modelSelect.appendChild(option);
+    });
+
+    if (selectedModel && models.some(model => model.id === selectedModel)) {
+      modelSelect.value = selectedModel;
+    }
+  }
+
   /**
    * Setup Advanced Settings tab
    * @param {HTMLElement} modalElement - Modal element
@@ -908,8 +937,14 @@ window.ModalModules = (function() {
             <div class="mb-4">
               <label for="modelSelect" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
               <select id="modelSelect" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                <option value="gpt-4">GPT-4</option>
+                <option value="gpt-5.5">GPT-5.5</option>
+                <option value="gpt-5.4">GPT-5.4</option>
+                <option value="gpt-5.4-mini">GPT-5.4 Mini</option>
+                <option value="gpt-4.1">GPT-4.1</option>
+                <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+                <option value="gpt-4.1-nano">GPT-4.1 Nano</option>
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gpt-4o-mini">GPT-4o Mini</option>
               </select>
             </div>
             <button id="saveApiSettingsBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-purple hover:bg-brand-purple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-all duration-200">

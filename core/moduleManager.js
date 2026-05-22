@@ -319,8 +319,13 @@ window.ModuleManager = (function() {
               <div class="mb-4">
                 <label for="modelSelect" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
                 <select id="modelSelect" class="shadow-sm focus:ring-brand-purple focus:border-brand-purple block w-full sm:text-sm border-gray-300 rounded-md transition-all duration-200 p-2 border">
-                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                  <option value="gpt-4">GPT-4</option>
+                  <option value="gpt-5.5">GPT-5.5</option>
+                  <option value="gpt-5.4">GPT-5.4</option>
+                  <option value="gpt-5.4-mini">GPT-5.4 Mini</option>
+                  <option value="gpt-4.1">GPT-4.1</option>
+                  <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+                  <option value="gpt-4.1-nano">GPT-4.1 Nano</option>
+                  <option value="gpt-4o">GPT-4o</option>
                   <option value="gpt-4o-mini">GPT-4o Mini</option>
                 </select>
               </div>
@@ -386,6 +391,16 @@ window.ModuleManager = (function() {
               const config = window.ConfigService.getApiConfig();
               const apiKeyInput = document.getElementById('apiKeyInput');
               const modelSelect = document.getElementById('modelSelect');
+              const models = window.ConfigService.getModels?.() || [];
+              if (modelSelect && models.length > 0) {
+                modelSelect.innerHTML = '';
+                models.forEach(model => {
+                  const option = document.createElement('option');
+                  option.value = model.id;
+                  option.textContent = model.displayName || model.name || model.id;
+                  modelSelect.appendChild(option);
+                });
+              }
               
               if (apiKeyInput && config.apiKey) {
                 apiKeyInput.value = config.apiKey;
