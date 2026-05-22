@@ -22,6 +22,7 @@ const ConfigManager = (function() {
       const modelsConfigStr = localStorage.getItem("models_config");
   
       let apiConfig = configStr ? JSON.parse(configStr) : { apiKey: "", model: "gpt-5.4-mini" };
+      apiConfig.model = normalizeApiModel(apiConfig.model);
       let stepsConfig = stepsConfigStr ? JSON.parse(stepsConfigStr) : null;
       let modelsConfig = modelsConfigStr ? JSON.parse(modelsConfigStr) : null;
   
@@ -63,6 +64,10 @@ const ConfigManager = (function() {
       return { stepsJson, modelsJson };
     }
     
+    function normalizeApiModel(model) {
+      return (!model || model === 'gpt-4o') ? 'gpt-5.4-mini' : model;
+    }
+
     function mergeDefaultModels(defaultModels, storedModels = []) {
       const defaults = Array.isArray(defaultModels) ? defaultModels : [];
       const stored = Array.isArray(storedModels) ? storedModels : [];

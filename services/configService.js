@@ -101,7 +101,7 @@ window.ConfigService = (function() {
           const apiConfig = JSON.parse(apiConfigStr);
           config.api = {
             apiKey: apiConfig.apiKey || '',
-            model: apiConfig.model || DEFAULT_CONFIG.api.model
+            model: normalizeApiModel(apiConfig.model)
           };
         } catch (error) {
           console.error('Error parsing API config:', error);
@@ -136,6 +136,19 @@ window.ConfigService = (function() {
       }
     }
     
+    /**
+     * Normalize saved API model values so users with the old default stored
+     * locally are moved to the current default.
+     * @param {string} model - Saved model ID
+     * @returns {string} - Model ID to use
+     */
+    function normalizeApiModel(model) {
+      if (!model || model === 'gpt-4o') {
+        return DEFAULT_CONFIG.api.model;
+      }
+      return model;
+    }
+
     /**
      * Ensure stored model lists receive newly shipped defaults while preserving
      * user-defined/custom models that are not part of the default list.
